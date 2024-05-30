@@ -6,12 +6,12 @@ from django.db.models import Max, Count, F, Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import get_messages
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from allauth.account.views import SignupView, LoginView
 from friends.models import Friend
 
-from app.models import Event, Comment, Profile, Message
+from app.models import Event, Comment, Profile
 from notifications.models import Notification
 from photos.models import Photo
 from . forms import ProfileForm, EventForm, UserUpdateForm, ProfileDescriptionForm
@@ -310,98 +310,6 @@ def remove_attendee(request, event_id):
         messages.error(request, 'You are not currently attending this event.')
 
     return redirect('home')
-
-
-# messages views
-
-@login_required
-def direct_messages(request, pk):
-    if request.user.profile.pk != int(pk):
-        messages.error(request, "You do not have permission to view this page.")
-        return redirect('home')
-
-    receiver_profile = Profile.objects.get(id=pk)
-    
-    latest_message_ids = (
-        Message.objects
-        .filter(receiver=receiver_profile)
-        .values('sender')
-        .annotate(latest_message_id=Max('id'))
-        .values_list('latest_message_id', flat=True)
-    )
-    latest_messages = Message.objects.filter(id__in=latest_message_ids)
-
-    senders = Profile.objects.filter(id__in=latest_messages.values_list('sender', flat=True))
-
-    # DM from profile page
-    if request.method == 'POST':
-        message_text = request.POST.get('message')
-        sender_profile = request.user.profile
-        recipient_profile = Profile.objects.get(id=pk)
-
-        if message_text:
-                Message.objects.create(
-                    sender=sender_profile,
-                    receiver=recipient_profile,
-                    message=message_text,
-                    timestamp=timezone.now()
-                )
-
-                Notification.objects.create(
-                user=receiver_profile,
-                message='You have a new message',
-                link=f'/messages/{receiver_profile.id}'
-                )
-
-        return redirect('profile', pk=pk)
-
-    context = {
-        "senders": senders,
-        "receiver": receiver_profile,
-        "latest_messages": latest_messages
-    }
-
-    return render(request, "app/messages.html", context)
-
-
-@login_required
-def conversation_view(request, sender_id, receiver_id):
-    if request.user.profile.pk == int(receiver_id):
-        sender_profile = get_object_or_404(Profile, id=sender_id)
-        receiver_profile = get_object_or_404(Profile, id=receiver_id)
-
-        messages_sent_by_sender = Message.objects.filter(sender=sender_profile, receiver=receiver_profile)
-        messages_sent_by_receiver = Message.objects.filter(sender=receiver_profile, receiver=sender_profile)
-        conversation_messages = messages_sent_by_sender | messages_sent_by_receiver
-        conversation_messages = conversation_messages.order_by('timestamp')
-
-        unread_messages = conversation_messages.filter(is_read=False)
-        unread_messages.update(is_read=True)
-
-        if request.method == 'POST':
-            message_text = request.POST.get('message')
-
-            if message_text:
-                    Message.objects.create(
-                        sender=receiver_profile,
-                        receiver=sender_profile,
-                        message=message_text,
-                        timestamp=timezone.now()
-                    )
-
-                    Notification.objects.create(
-                    user=receiver_profile,
-                    message='You have a new message',
-                    link='/messages/'
-                    )
-
-            return redirect('conversation', sender_id=sender_profile.id, receiver_id=receiver_profile.id)
-
-
-        return render(request, "app/conversation.html", {"messages": conversation_messages, "sender": sender_profile, "receiver": receiver_profile})
-    else:
-        messages.error(request, "You do not have permission to view this page.")
-        return redirect('home')
 
 
 # class based views

@@ -8,7 +8,6 @@ urlpatterns = [
   path('about', views.about, name="about"),
   path('recommendations', views.recommendations, name="recommendations"),
   path('contact', views.contact, name="contact"),
-  path('messages/<int:pk>', views.direct_messages, name='messages'),
   path('event/<int:pk>/', views.event, name="event"),
   path('event/<int:event_id>/remove_attendee/', views.remove_attendee, name='remove_attendee'),
   # all_auth urls
@@ -16,8 +15,6 @@ urlpatterns = [
   path('accounts/signup/', CustomSignupView.as_view(), name='account_signup'),
   path('accounts/profile/<int:profile_id>', views.profile, name='profile'),
   path('accounts/profile/<int:profile_id>/settings', views.profile_settings, name='profile_settings'),
-  # messages
-  path('conversation/<int:sender_id>/<int:receiver_id>/', views.conversation_view, name='conversation'),
   # photo gallery
   path('photos/', include('photos.urls')),
 ]
