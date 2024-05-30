@@ -9,8 +9,9 @@ from django.contrib.messages import get_messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from allauth.account.views import SignupView, LoginView
+from friends.models import Friend
 
-from app.models import Event, Comment, Profile, Follow, Message, Notification
+from app.models import Event, Comment, Profile, Message, Notification
 from photos.models import Photo
 from . forms import ProfileForm, EventForm, UserUpdateForm, ProfileDescriptionForm
 
@@ -152,10 +153,30 @@ def event(request, pk):
 
 
 def profile(request, profile_id):
+    current_user_profile = request.user.profile
     profile = Profile.objects.get(id=profile_id)
+    print(profile.id)
     user_photos = Photo.objects.filter(profile=profile).order_by('-timestamp')[:6]
     user_instance = profile.user
-    button = "Follow" if not Follow.objects.filter(follower=request.user.profile, following=profile_id) else "Unfollow"
+    
+    # Determine friendship status
+    friend_status = None
+    if Friend.objects.filter(sender=current_user_profile, receiver=profile).exists():
+        friend_status = Friend.objects.get(sender=current_user_profile, receiver=profile).status
+    elif Friend.objects.filter(sender=profile, receiver=current_user_profile).exists():
+        friend_status = Friend.objects.get(sender=profile, receiver=current_user_profile).status
+
+    if friend_status == 'pending':
+        button = 'Pending'
+    elif friend_status == 'accepted':
+        button = 'Accepted'
+    elif friend_status == 'denied':
+        button = 'Add'
+    else:
+        button = 'Add'
+
+
+
     current_datetime = timezone.now()
     twenty_four_hours_ago = current_datetime - timedelta(hours=24)
     twenty_four_hours_ago_date = twenty_four_hours_ago.date()
@@ -189,8 +210,11 @@ def profile(request, profile_id):
         event_date__gt=twenty_four_hours_ago_date
     )
 
-    followers = Follow.objects.filter(following=profile_id)[:6]
-    following = Follow.objects.filter(follower=profile_id)[:6]
+    # Get friends
+    friends_as_sender = Friend.objects.filter(sender=profile, status='accepted').values_list('receiver', flat=True)
+    friends_as_receiver = Friend.objects.filter(receiver=profile, status='accepted').values_list('sender', flat=True)
+    friend_ids = list(friends_as_sender) + list(friends_as_receiver)
+    friends = Profile.objects.filter(id__in=friend_ids)
 
     #initalize forms
     profile_form = ProfileForm(instance=profile)
@@ -215,14 +239,18 @@ def profile(request, profile_id):
                 messages.success(request, 'User details updated successfully.')
                 return redirect('profile', profile_id=profile_id)
 
-        # follow / unfollow form
-        if "follow-button" in request.POST:
-            if request.POST["follow-button"] == "Follow":
-                button = "Unfollow"
-                Follow.objects.create(follower=request.user.profile, following=Profile.objects.get(id=profile_id))
+        # friend / unfriend form
+        if "friend-button" in request.POST:
+            if request.POST["friend-button"] == "Add":
+                button = "Pending"
+
+                if not Friend.objects.filter(sender=current_user_profile, receiver=profile, status='pending').exists():
+                    Friend.objects.create(sender=current_user_profile, receiver=profile, status='pending')
+                    Notification.objects.create(user=profile, message="You have a new friend request", link=reverse('friend_requests'))
+
             else:
-                button = 'Follow'
-                Follow.objects.get(follower=request.user.profile, following=Profile.objects.get(id=profile_id)).delete()
+                button = 'Add'
+                Friend.objects.get(sender=request.user.profile, receiver=Profile.objects.get(id=profile_id)).delete()
         
         # description form
         if "update-description" in request.POST:
@@ -247,8 +275,7 @@ def profile(request, profile_id):
         "attended_events": attended_events, 
         "hosted_events": hosted_events, 
         "profile":profile,
-        "followers": followers,
-        "following": following,
+        "friends": friends,
         "button": button,
         "description_form": description_form,
         "success_message": success_message
@@ -398,17 +425,6 @@ def mark_all_notifications_as_read(request):
     user_profile = request.user.profile
     user_profile.notification_set.filter(read=False).update(read=True)
     return JsonResponse({'success': True})
-
-
-def following(request, pk):
-    following = Follow.objects.filter(follower=pk)
-    return render(request, 'app/following.html', {"following": following})
-
-
-
-def followers(request, pk):
-    followers = Follow.objects.filter(following=pk)
-    return render(request, 'app/followers.html', {"followers": followers})
 
 
 # class based views

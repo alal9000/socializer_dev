@@ -10,9 +10,6 @@ class Profile(models.Model):
   profile_pic = models.ImageField(default="profile2.png", null=True, blank=True)
   date_created = models.DateTimeField(auto_now_add=True, null=True)
   description = models.CharField(max_length=500, null=True, blank=True)
-  gallery_image1 = models.ImageField(default="profile2.png", null=True, blank=True)
-  gallery_image2 = models.ImageField(default="profile2.png", null=True, blank=True)
-  gallery_image3 = models.ImageField(default="profile2.png", null=True, blank=True)
   
 
   def __str__(self):
@@ -43,14 +40,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.comment}"
-
-
-class Follow(models.Model):
-    follower = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="follower_user")
-    following = models.ForeignKey(Profile,  on_delete=models.CASCADE, related_name="following_user")
-
-    def __str__(self):
-        return f"{self.follower} -> {self.following}"
 
 
 class Message(models.Model):
