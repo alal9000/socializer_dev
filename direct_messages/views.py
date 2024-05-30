@@ -11,10 +11,6 @@ from notifications.models import Notification
 
 @login_required
 def direct_messages(request, pk):
-    if request.user.profile.pk != int(pk):
-        messages.error(request, "You do not have permission to view this page.")
-        return redirect('home')
-
     receiver_profile = Profile.objects.get(id=pk)
     
     latest_message_ids = (
@@ -30,11 +26,13 @@ def direct_messages(request, pk):
 
     # DM from profile page
     if request.method == 'POST':
+        print("POST request received")  # Debug statement
         message_text = request.POST.get('message')
         sender_profile = request.user.profile
         recipient_profile = Profile.objects.get(id=pk)
 
         if message_text:
+                print("Creating message")  # Debug statement
                 Message.objects.create(
                     sender=sender_profile,
                     receiver=recipient_profile,
@@ -47,8 +45,9 @@ def direct_messages(request, pk):
                 message='You have a new message',
                 link=f'/messages/{receiver_profile.id}'
                 )
+                print("Message and notification created")  # Debug statement
 
-        return redirect('profile', pk=pk)
+        return redirect('home')
 
     context = {
         "senders": senders,
@@ -56,7 +55,7 @@ def direct_messages(request, pk):
         "latest_messages": latest_messages
     }
 
-    return render(request, "messages/messages.html", context)
+    return render(request, "direct_messages/messages.html", context)
 
 
 @login_required
@@ -75,6 +74,7 @@ def conversation_view(request, sender_id, receiver_id):
 
         if request.method == 'POST':
             message_text = request.POST.get('message')
+            print(message_text)
 
             if message_text:
                     Message.objects.create(
@@ -93,7 +93,7 @@ def conversation_view(request, sender_id, receiver_id):
             return redirect('conversation', sender_id=sender_profile.id, receiver_id=receiver_profile.id)
 
 
-        return render(request, "messages/conversation.html", {"messages": conversation_messages, "sender": sender_profile, "receiver": receiver_profile})
+        return render(request, "direct_messages/conversation.html", {"messages": conversation_messages, "sender": sender_profile, "receiver": receiver_profile})
     else:
         messages.error(request, "You do not have permission to view this page.")
         return redirect('home')
