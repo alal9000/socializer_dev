@@ -43,7 +43,7 @@ def direct_messages(request, pk):
                 Notification.objects.create(
                 user=receiver_profile,
                 message='You have a new message',
-                link=f'/messages/{receiver_profile.id}'
+                link=f'/direct_messages/messages/{receiver_profile.id}'
                 )
                 print("Message and notification created")  # Debug statement
 

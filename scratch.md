@@ -15,20 +15,22 @@ todo:
 -new signup auth email (last)
 
 
--friend implementation
+-finish chunking restructure
+-friend implementation x
 -change email functionality
 -finish profile settings page
 -show / hide friend count
--remove follow implementation
--do friend functionality implementation
+-remove follow implementation x
+-do friend functionality implementation x
+-change message implementation so people can't see each others messages page
 -edit / save toggle functionality to update the forms on the front end
--clean up user_form (user settings form) from the profile view and template
 -make sure when users check each others profile, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another profile)
 -make sure when users check each others messages, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another message profile)
 -make sure when users check each others photos, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another users photos)
 -check if user needs to be logged in to access that resource first and then if it actually exisits - do this to make sure all 404s are handled
 -create 10 fake users A - I, then do vigourous testing
 -notifications overflow past the footer when long
+
 
 
 git rm --cached */__pycache__/* - remove pycache from tracked files

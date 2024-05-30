@@ -56,7 +56,7 @@
 
 <script>
   function markAsRead(notificationId) {
-    fetch(`/mark-as-read/${notificationId}/`, {
+    fetch(`/notifications/mark-as-read/${notificationId}/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -79,7 +79,7 @@
   }
 
   function markAllAsRead() {
-    fetch('/mark-all-as-read/', {
+    fetch('/notifications/mark-all-as-read/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
