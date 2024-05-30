@@ -1,4 +1,4 @@
-from app.models import Notification
+from notifications.models import Notification
 
 def notifications_count(request):
     unread_count = 0

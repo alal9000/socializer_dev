@@ -11,7 +11,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from allauth.account.views import SignupView, LoginView
 from friends.models import Friend
 
-from app.models import Event, Comment, Profile, Message, Notification
+from app.models import Event, Comment, Profile, Message
+from notifications.models import Notification
 from photos.models import Photo
 from . forms import ProfileForm, EventForm, UserUpdateForm, ProfileDescriptionForm
 
@@ -401,30 +402,6 @@ def conversation_view(request, sender_id, receiver_id):
     else:
         messages.error(request, "You do not have permission to view this page.")
         return redirect('home')
-
-
-
-# notification views
-@login_required
-def notifications(request):
-    user_profile = request.user.profile
-    notifications = user_profile.notification_set.filter(read=False).order_by('-timestamp')
-    return render(request, 'app/notifications.html', {'notifications': notifications})
-
-
-@login_required
-def mark_notification_as_read(request, notification_id):
-    notification = Notification.objects.get(id=notification_id)
-    notification.read = True
-    notification.save()
-    return JsonResponse({'success': True})
-
-
-@login_required
-def mark_all_notifications_as_read(request):
-    user_profile = request.user.profile
-    user_profile.notification_set.filter(read=False).update(read=True)
-    return JsonResponse({'success': True})
 
 
 # class based views

@@ -16,10 +16,6 @@ urlpatterns = [
   path('accounts/signup/', CustomSignupView.as_view(), name='account_signup'),
   path('accounts/profile/<int:profile_id>', views.profile, name='profile'),
   path('accounts/profile/<int:profile_id>/settings', views.profile_settings, name='profile_settings'),
-  # notification urls
-  path('notifications/', views.notifications, name='notifications'),
-  path('mark-as-read/<int:notification_id>/', views.mark_notification_as_read, name='mark_as_read'),
-  path('mark-all-as-read/', views.mark_all_notifications_as_read, name='mark_all_as_read'),
   # messages
   path('conversation/<int:sender_id>/<int:receiver_id>/', views.conversation_view, name='conversation'),
   # photo gallery
