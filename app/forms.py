@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django import forms
 from allauth.account.forms import SignupForm, LoginForm
 
-from . models import Event, Profile, User
+from . models import Profile, User
+from events.models import Event
 
 #create event
 class EventForm(ModelForm):

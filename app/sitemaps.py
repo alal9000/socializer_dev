@@ -1,6 +1,6 @@
 from django.contrib.sitemaps import Sitemap
 from django.shortcuts import reverse
-from . models import Event
+from events.models import Event
 
 class StaticViewSitemap(Sitemap):
   def items(self):
