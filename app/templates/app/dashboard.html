@@ -1,0 +1,132 @@
+{% extends "app/main.html" %} {% block content %} {% load static %}
+
+<style>
+  .empty-events {
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-pic{
+		border-radius: 100%;
+  	padding: 50px;
+	}
+
+.alert-fixed {
+  position:fixed; 
+  top: 0px; 
+  left: 0px; 
+  width: 100%;
+  z-index:9999; 
+  border-radius:0px;
+  margin-top: 56px;
+}
+</style>
+
+<!-- showcase -->
+{% if not request.user.is_authenticated %}
+<section
+  class="bg-dark text-light p-5 p-lg-0 pt-lg-5 text-center text-sm-start"
+>
+  <div class="container">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <div>
+        <h1>Meet, <span class="text-warning">Socialize,</span> Explore</h1>
+        <p class="lead my-4">Let the good times roll with Socializer. Free for everyone.</p>
+        <a
+          href="{% url 'create' %}"
+          class="btn btn-primary btn-lg"
+        >
+          Create My Event
+      </a>
+      </div>
+
+      <img
+        class="img-fluid w-50 d-none d-sm-block"
+        src="images/having_fun.svg"
+        alt=""
+      />
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- event cards -->
+<section>
+  <div class="container">
+    {% if messages %}
+    <div>
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible alert-fixed fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <h1>Hi, {{request.user.first_name|capfirst}} 👋</h1>
+
+    {% if events %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for event in events %}
+      <div class="col">
+        <div class="card">
+          <h5 class="card-title p-2">{{ event.event_title }}</h5>
+          {% if event.host.profile_pic %}
+          <img
+            src="{{ event.host.profile_pic.url }}"
+            class="profile-pic"
+            alt="{{ event.title }}"
+          />
+          {% else %}
+          <img
+            src="{% static 'images/profile2.png' %}"
+            class="profile-pic"
+            alt="{{ event.title }}"
+          />
+          {% endif %}
+          <div class="card-body">
+            <p class="card-text">{{ event.description|truncatechars:50 }}</p>
+            <a href="{% url 'event' event.id %}" class="btn btn-primary"
+              >Join Event</a
+            >
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination links -->
+    {% if events.has_other_pages %}
+    <div class="pagination">
+      {% if events.has_previous %}
+      <a href="?page=1" class="page-link">&laquo; First</a>
+      <a href="?page={{ events.previous_page_number }}" class="page-link"
+        >&lsaquo; Previous</a
+      >
+      {% endif %}
+      <span class="current-page"
+        >Page {{ events.number }} of {{ events.paginator.num_pages }}</span
+      >
+      {% if events.has_next %}
+      <a href="?page={{ events.next_page_number }}" class="page-link"
+        >Next &rsaquo;</a
+      >
+      <a href="?page={{ events.paginator.num_pages }}" class="page-link"
+        >Last &raquo;</a
+      >
+      {% endif %}
+    </div>
+    {% endif %} {% else %}
+    <div class="empty-events">
+      <h2>wow such empty ^-^</h2>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+
+{% endblock %}

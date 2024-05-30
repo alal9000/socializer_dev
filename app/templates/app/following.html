@@ -1,0 +1,26 @@
+{% extends "app/main.html" %} {% load static %}{% block content %}
+
+<style>
+
+</style>
+
+<!-- main section -->
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <h1>Following</h1>
+
+        <ul class="list-unstyled">
+					{% for follow in following %}
+						<li class="mb-2"><a href="{% url 'profile' follow.following.id %}"><img class="avatar" src="{{ follow.following.profile_pic.url }}" alt="Avatar">{{ follow.following.user.first_name }}</a></li>
+					{% endfor %}
+				</ul>
+        
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+{% endblock %}

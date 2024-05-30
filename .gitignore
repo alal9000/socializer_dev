@@ -1,0 +1,11 @@
+*.log
+*.pot
+*.pyc
+__pycache__/
+venv/
+node_modules/
+settings.py
+node_modules/
+create.html
+event.html
+db.sqlite3

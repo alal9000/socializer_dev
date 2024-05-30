@@ -1,0 +1,250 @@
+{% extends "app/main.html" %} 
+{% block content %} 
+{% load account %} 
+{% load static %}
+
+<style>
+	.profile-pic{
+		max-width: 200px;
+		max-height:200px;
+		margin: 0 auto;
+		border-radius: 50%;
+	}
+
+	.avatar {
+		width: 50px;
+		border-radius: 100%;
+		margin-right: 5px;
+		object-fit: cover;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.gallery-item {
+  flex: 50px 50px 50px 50px; /* Adjust the width of each column as needed */
+  margin-bottom: 20px;
+	background-color: brown;
+}
+
+.gallery-item img {
+  max-width: 100%;
+  height: auto;
+}
+
+.alert-fixed {
+    position:fixed; 
+    top: 0px; 
+    left: 0px; 
+    width: 100%;
+    z-index:9999; 
+    border-radius:0px;
+		margin-top: 56px;
+}
+
+.profile-albums {
+	max-width: 45%;
+}
+
+hr.style-one {
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+</style>
+
+<section>
+  <div class="container mt-2">
+		{% if messages %}
+    <div>
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible alert-fixed fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="row">
+
+			<!-- column 1 -->
+      <div class="col-md">
+				<!-- user name and profile image -->
+        <div class="card card-body">
+          <form action="#" method="post" class="w-100">
+            {% if request.user.profile != profile %} 
+							{% csrf_token %} 
+							{% if button == "Follow" %}
+							<button class="btn btn-primary w-100" name="follow-button" value="Follow">
+								Follow
+							</button>
+							{% else %}
+							<button class="btn btn-danger w-100" name="follow-button" value="Unfollow">
+								Unfollow
+							</button>
+							{% endif %} 
+						{% endif %}
+          </form>
+
+          {% if request.user.profile != profile %}
+						<a
+							class="btn btn-warning mt-2"
+							href="#"
+							data-bs-toggle="modal"
+							data-bs-target="#reg-modal"
+							>Message</a
+						>
+          {% endif %}
+          <hr />
+          <h3 style="text-align: center">
+            {{ profile.user.first_name|capfirst}} {{profile.user.last_name|capfirst|slice:":1" }}
+          </h3>
+          <hr />
+          {% if profile.profile_pic %}
+          	<img class="profile-pic" src="{{profile.profile_pic.url}}" />
+          {% else %}
+						<img
+							class="profile-pic"
+							src="{% static 'images/profile2.png' %}"
+							alt="Default Profile Picture"
+						/>
+          {% endif %}
+
+
+
+        </div>
+				{% if request.user.profile == profile %}
+				<!-- profile pic form -->
+					<div class="card card-body mt-2">
+						<form method="POST" action="" enctype="multipart/form-data">
+							{% csrf_token %}
+							{{profile_form.as_p}}
+					
+						<input class="btn btn-primary" type="submit" name="profile-pic" value="update-image">
+						</form>
+					</div>
+
+					<!-- profile description -->
+					<div class="card card-body mt-2">
+						<form method="POST" action="">
+								{% csrf_token %}
+								{{ description_form.as_p }}
+								<button class="btn btn-primary mt-2" type="submit" name="update-description">Update Description</button>
+						</form>
+					</div>
+
+					<!-- user settings link -->
+					<a href="{% url 'profile_settings' profile.id %}" class="btn btn-primary w-100 mt-2">User settings</a>
+				{% endif %}
+  		</div>
+
+
+
+
+
+			<!-- column 2 -->
+			
+      <div class="col-md mb-2">
+				<div class="card card-body">
+				<div>
+					<h1><a href="{% url 'gallery' profile.id %}" class="text-decoration-none">{{ profile.user.first_name|capfirst}}'s Photo Gallery</a></h1>
+				{% if user_photos %}
+					{% for photo in user_photos %}
+						<a href="{% url 'gallery' profile.id %}"><img src="{{photo.image.url}}" alt="" class="profile-albums mb-2"></a>
+					{% endfor %}
+				{% else %}
+					<p>User has not uploaded any photos</p>
+				{% endif %}
+				</div>
+			</div>
+
+				
+			</div>
+
+
+			<!-- column 3 -->
+      <div class="col-md">
+				<div class="card card-body">
+					<div>
+						<h1>Events Attending</h1>
+					<ul class="list-unstyled">
+							{% for event in attended_events %}
+									<li><a href="{% url 'event' event.id %}" class="text-decoration-none"><img class="avatar" src="{{ event.host.profile_pic.url }}" alt="Avatar">{{ event.event_title }}</a></li>
+									<hr class="style-one">
+							{% empty %}
+									<li>No events attended yet.</li>
+							{% endfor %}
+					</ul>
+	
+					<h1 class="mt-5">Events Hosting </h1>
+					<ul class="list-unstyled">
+							{% for event in hosted_events %}
+							<li>
+								<a href="{% url 'event' event.id %}" class="text-decoration-none">
+										<img class="avatar" src="{{ event.host.profile_pic.url }}" alt="Avatar">
+										{{ event.event_title }}
+								</a>
+						</li>
+						<hr class="style-one">
+							{% empty %}
+									<li>No events hosted yet.</li>
+							{% endfor %}
+					</ul>
+					</div>
+				</div>
+
+				<div class="card card-body mt-2">
+					<div>
+						<a href="{% url 'followers' profile.pk %}" class="text-decoration-none"><h1>Followers</h1></a>
+					<ul class="list-unstyled">
+						{% for follower in followers%}
+							<li class="mb-2"><a href="{% url 'profile' follower.follower.id %}" class="text-decoration-none"><img class="avatar" src="{{ follower.follower.profile_pic.url }}" alt="Avatar">{{ follower.follower.user.first_name }}</a></li>
+							<hr class="style-one">
+
+						{% endfor %}
+					</ul>
+	
+					<a href="{% url 'following' profile.pk %}" class="text-decoration-none"><h1>Following</h1></a>
+					<ul class="list-unstyled">
+						{% for follow in following %}
+							<li class="mb-2"><a href="{% url 'profile' follow.following.id %}" class="text-decoration-none"><img class="avatar" src="{{ follow.following.profile_pic.url }}" alt="Avatar">{{ follow.following.user.first_name }}</a></li>
+							<hr class="style-one">
+						{% endfor %}
+					</ul>
+					</div>
+				</div>
+
+
+				
+			</div>
+    </div>
+  </div>
+
+	<!-- modal -->
+  <div class="modal fade" id="reg-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-title">Send a message to {{ profile.user.first_name }}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form method="post" action="{% url 'messages' profile.id %}">
+						{% csrf_token %}
+						<div class="form-group">
+							<label for="message-text" class="col-form-label">Message:</label>
+							<textarea class="form-control" id="message-text" name="message" required></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "app/main.html" %} {% load static %}{% block content %}
+
+<style>
+  .rec-table {
+    border-collapse: collapse;
+  }
+
+  .rec-table th,
+  .rec-table td {
+    border: none;
+    padding: 8px;
+    text-align: left;
+  }
+
+  .rec-table th {
+    background-color: #f2f2f2;
+  }
+
+</style>
+<!-- recs body -->
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col" style="height: 70vh;">
+        <h1>Recommendations</h1>
+
+        <table class="rec-table">
+          <tr>
+            <th>Establishment</th>
+            <th>Location</th>
+            <th>Website</th>
+          </tr>
+          <tr>
+            <td>Machiavelli Ristorante Italiano</td>
+            <td>123 Clarence St, Sydney NSW 2000</td>
+            <td>
+              <a href="https://www.machiavelli.com.au/"
+                >https://www.machiavelli.com.au/</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Manjits Wharf</td>
+            <td>10/49 Lime St, Sydney NSW 2000</td>
+            <td>
+              <a href="https://www.manjits.com.au/">https://www.manjits.com.au/</a>
+            </td>
+          </tr>
+          <tr>
+            <td>Bondi Icebergs Dining Room and Bar</td>
+            <td>Notts Avenue, Bondi Beach NSW, Australia</td>
+            <td>
+              <a href="https://idrb.com/">https://idrb.com/</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "app/main.html" %} {% load static %}{% block content %}
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-4">
+          <a class="btn btn-dark my-3" href="{% url 'gallery' profile.id %}">Go Back</a>
+          <div class="card">
+
+
+
+            <form method="POST" action="" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="mb-3 m-3">
+                <label class="form-label">Description</label>
+                <input required name="description" class="form-control" type="text" placeholder="Enter a description">
+              </div>
+              <div class="mb-3 m-3">
+                <label class="form-label">Select a category</label>
+                <select class="form-select" name="category">
+                  <option value="none">Select a category...</option>
+                  {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="mb-3 m-3">
+                <label class="form-label">Create a new category</label>
+                <input name="category_new" class="form-control" type="text" placeholder="Create a new category">
+              </div>
+              <div class="mb-3 m-3">
+                <label class="form-label">Upload Image</label>
+                <input required name="image" class="form-control" type="file">
+              </div>
+              <button class="btn btn-primary m-3">Submit</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

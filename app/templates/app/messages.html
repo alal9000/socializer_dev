@@ -1,0 +1,125 @@
+{% extends "app/main.html" %} {% block content %}
+
+<style>
+  .container-chat {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .unread-message {
+    font-weight: bold;
+  }
+
+  .time {
+    float: left;
+    color: #aaa;
+  }
+
+  .username {
+    color: #aaa;
+    float: left;
+    margin-left: 5px;
+  }
+
+  .container-chat img {
+    float: left;
+    max-width: 60px;
+    width: 100%;
+    margin-right: 20px;
+    border-radius: 50%;
+  }
+
+  .chat-area-messages {
+    flex: 1;
+    box-sizing: border-box;
+    padding-left: 0;
+    overflow-y: auto;
+  }
+</style>
+
+<!-- Main section -->
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <!-- Page header -->
+        <section>
+          <h1>Messages</h1>
+          <h3>Search conversation</h3>
+          <input
+            type="text"
+            id="search-input"
+            class="form-control w-50 p-2 rounded border border-grey mb-2"
+            placeholder="Name..."
+          />
+        </section>
+
+        <!-- Chat area -->
+        <section>
+          <div id="chat-area-messages">
+            <ul class="p-0">
+              {% for message in latest_messages %}
+              <a
+                href="{% url 'conversation' message.sender.id receiver.id %}"
+                class="message-link"
+              >
+                <div class="container-chat">
+                  <img src="{{message.sender.profile_pic.url}}" alt="Avatar" />
+                  <p class="username">{{message.sender.user.first_name}}</p>
+                  {% if not message.is_read %}
+                  <p class="unread-message ps-1">{{ message.message }}</p>
+                  {% else %}
+                  <p class="ps-1">{{ message.message }}</p>
+                  {% endif %}
+                  <span class="time">11:00</span>
+                </div>
+              </a>
+              {% endfor %} {% if not latest_messages %}
+              <div>
+                <h1>No direct messages yet</h1>
+              </div>
+              {% endif %}
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function scrollToBottom() {
+      var chatArea = document.getElementById('chat-area-messages');
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function filterMessages() {
+      var input = document.getElementById('search-input').value.toLowerCase();
+      var messageLinks = document.querySelectorAll('.message-link');
+      messageLinks.forEach(function (link) {
+        var username = link
+          .querySelector('.username')
+          .textContent.toLowerCase();
+        if (username.includes(input)) {
+          link.style.display = 'block';
+        } else {
+          link.style.display = 'none';
+        }
+      });
+    }
+
+    document
+      .getElementById('search-input')
+      .addEventListener('input', filterMessages);
+
+    scrollToBottom();
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md">
+      <!-- user detail form -->
+      <div class="card card-body mt-2">
+        <form method="POST" action="" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{user_form.as_p}}
+
+        <input class="btn btn-primary" type="submit" name="user-details" value="update-details">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
