@@ -16,7 +16,7 @@
 		border-radius: 100%;
 		margin-right: 5px;
 		object-fit: cover;
-}
+	}
 
 .gallery {
   display: flex;
@@ -35,7 +35,7 @@
   height: auto;
 }
 
-.alert-fixed {
+/* .alert-fixed {
     position:fixed; 
     top: 0px; 
     left: 0px; 
@@ -43,7 +43,7 @@
     z-index:9999; 
     border-radius:0px;
 		margin-top: 56px;
-}
+} */
 
 .profile-albums {
 	max-width: 45%;
@@ -62,7 +62,7 @@ hr.style-one {
 		{% if messages %}
     <div>
       {% for message in messages %}
-      <div class="alert alert-success alert-dismissible alert-fixed fade show" role="alert">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
@@ -145,7 +145,7 @@ hr.style-one {
 					</div>
 
 					<!-- user settings link -->
-					<a href="{% url 'profile_settings' profile.id %}" class="btn btn-primary w-100 mt-2">User settings</a>
+					<a href="{% url 'profile_settings' profile.id %}" class="btn btn-secondary w-100 mt-2">User settings</a>
 				{% endif %}
   		</div>
 

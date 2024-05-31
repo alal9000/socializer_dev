@@ -1,12 +1,15 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.contrib.messages import get_messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from allauth.account.views import SignupView, LoginView
+from django.db.models import Q, Count, F, Value
+from django.db.models.functions import Coalesce
 from friends.models import Friend
 
 from . models import Profile
@@ -18,20 +21,25 @@ from events.models import Event
 
 # function based views
 def home(request):
-    current_datetime = timezone.now()
-    twenty_four_hours_ago = current_datetime - timedelta(hours=24)
+    current_datetime = datetime.now()
     unread_count = 0
     if request.user.is_authenticated:
         user = request.user.profile
         unread_count = Notification.objects.filter(user=user, read=False).count()
     
-    # filter out events that are full and over 24 hours old
-    all_events = Event.objects.filter(
-        event_date__gte=twenty_four_hours_ago.date(),
-        event_time__gte=twenty_four_hours_ago.time(),
+    # filter out events that are past their starting time and that are full / need understanding for this
+    all_events = Event.objects.annotate(
+        num_guests=Count('guests'),
+        num_attendees=Coalesce(F('num_guests') + Value(1), Value(0))  # add 1 for the host
+    ).filter(
+        Q(event_date__gt=current_datetime.date()) |
+        Q(event_date=current_datetime.date(), event_time__gte=current_datetime.time())
+    ).filter(
+        Q(total_attendees__isnull=True) | Q(num_attendees__lt=F('total_attendees'))
     ).order_by('-date_created')
 
     print(all_events)
+                    
 
     # pagination logic
     events_per_page = 12
@@ -97,8 +105,6 @@ def profile(request, profile_id):
     else:
         button = 'Add'
 
-
-
     current_datetime = timezone.now()
     twenty_four_hours_ago = current_datetime - timedelta(hours=24)
     twenty_four_hours_ago_date = twenty_four_hours_ago.date()
@@ -154,20 +160,13 @@ def profile(request, profile_id):
                 messages.success(request, 'Profile picture updated successfully.')
                 return redirect('profile', profile_id=profile_id)
 
-        if "user-details" in request.POST:
-            user_form = UserUpdateForm(request.POST, instance=user_instance)
-            if user_form.is_valid():
-                user_form.save()
-                messages.success(request, 'User details updated successfully.')
-                return redirect('profile', profile_id=profile_id)
-
         # friend / unfriend form
         if "friend-button" in request.POST:
             if request.POST["friend-button"] == "Add":
                 button = "Pending"
                 if not Friend.objects.filter(sender=current_user_profile, receiver=profile, status='pending').exists():
                     Friend.objects.create(sender=current_user_profile, receiver=profile, status='pending')
-                    Notification.objects.create(user=profile, message="You have a new friend request", link=reverse('friend_requests'))
+                    Notification.objects.create(user=profile, message="You have a new friend request", link=reverse('friend_requests', args=[profile_id]))
             else:
                 button = 'Add'
                 Friend.objects.get(sender=request.user.profile, receiver=Profile.objects.get(id=profile_id)).delete()
@@ -205,8 +204,15 @@ def profile(request, profile_id):
 @login_required
 def profile_settings(request, profile_id):
     profile = get_object_or_404(Profile, id=profile_id)
-    user_instance =profile.user
+    user_instance = profile.user
     user_form = UserUpdateForm(instance=user_instance)
+
+    if "user-details" in request.POST:
+            user_form = UserUpdateForm(request.POST, instance=user_instance)
+            if user_form.is_valid():
+                user_form.save()
+                messages.success(request, 'User details updated successfully.')
+                return redirect('profile_settings', profile_id=profile_id)
 
     context = {
         'profile': profile,
@@ -214,6 +220,17 @@ def profile_settings(request, profile_id):
     }
 
     return render(request, "app/settings.html", context)
+
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        profile = Profile.objects.get(user=request.user)
+        profile.delete()
+        request.user.delete()
+        logout(request)
+        messages.success(request, 'Your account and associated profile have been successfully deleted.')
+        return redirect('home')
 
 
 # class based views

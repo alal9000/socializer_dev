@@ -15,13 +15,9 @@ todo:
 -new signup auth email (last)
 
 
--finish chunking restructure
--friend implementation x
 -change email functionality
 -finish profile settings page
 -show / hide friend count
--remove follow implementation x
--do friend functionality implementation x
 -change message implementation so people can't see each others messages page
 -edit / save toggle functionality to update the forms on the front end
 -make sure when users check each others profile, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another profile)
@@ -38,6 +34,9 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 ==========================================================
 today:
 
-1.
+1. profile settings page
+2. notifications overflow issue x
+3. unauthorized messages inbox access 
+4. friend request add profile pic to notification x
 
 

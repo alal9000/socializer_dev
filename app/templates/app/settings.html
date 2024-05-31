@@ -1,4 +1,17 @@
+{% extends "app/main.html" %}
+{% block content %}
+
 <div class="container">
+  {% if messages %}
+    <div>
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible alert-fixed fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
   <div class="row">
     <div class="col-md">
       <!-- user detail form -->
@@ -10,6 +23,26 @@
         <input class="btn btn-primary" type="submit" name="user-details" value="update-details">
         </form>
       </div>
+      <form method="POST" action="{% url 'delete_account' %}" enctype="multipart/form-data" class="mt-2 d-flex align-items-center">
+        {% csrf_token %}
+        <p class="m-0 me-2">Delete your account permanently</p>
+        <button id="delete-account-btn" class="btn btn-danger">Delete Account</button>
+      </form>
     </div>
   </div>
 </div>
+
+<script>
+  var button = document.getElementById("delete-account-btn");
+  button.addEventListener("click", function() {
+    if (confirm('Are you sure you want to delete your account?')) {
+      document.getElementById('delete-account-form').submit();
+    }
+    else {
+      event.preventDefault();
+    }
+      
+  });
+</script>
+
+{% endblock %}

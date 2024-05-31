@@ -4,6 +4,11 @@
 
 <style>
 
+.notifications-container {
+    max-height: 80vh; 
+    overflow-y: auto;
+  }
+
   .notification {
     background-color: #f0f0f0; 
     border: 1px solid #ccc; 
@@ -41,7 +46,7 @@
     </div>
     {% for notification in notifications %}
     <div class="row justify-content-center">
-      <div class="col-12 col-md-8 col-lg-6">
+      <div class="col-12 col-md-8 col-lg-6 notifications-container">
         <div class="notification" id="{{notification.id}}">
           <a href="{{ notification.link }}" class="notification-message">{{ notification.message }}</a>
           <button type="button" class="dismiss-button" onclick="markAsRead('{{ notification.id }}')">Dismiss</button>

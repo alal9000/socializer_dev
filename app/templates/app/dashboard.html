@@ -15,7 +15,7 @@
   	padding: 50px;
 	}
 
-.alert-fixed {
+/* .alert-fixed {
   position:fixed; 
   top: 0px; 
   left: 0px; 
@@ -23,8 +23,20 @@
   z-index:9999; 
   border-radius:0px;
   margin-top: 56px;
-}
+} */
 </style>
+
+<!-- messages -->
+{% if messages %}
+  <div>
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+  </div>
+{% endif %}
 
 <!-- showcase -->
 {% if not request.user.is_authenticated %}
@@ -57,16 +69,7 @@
 <!-- event cards -->
 <section>
   <div class="container">
-    {% if messages %}
-    <div>
-      {% for message in messages %}
-      <div class="alert alert-success alert-dismissible alert-fixed fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
+    
     <h1>Hi, {{request.user.first_name|capfirst}} 👋</h1>
 
     {% if events %}

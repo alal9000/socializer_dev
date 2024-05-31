@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from . models import Friend
+from app.models import Profile
 
 # Create your views here.
-def friends(request, pk):
+def friends(request):
     friends = Friend.objects.all()
     return render(request, 'friends/friends.html', {"friends": friends})
 
 
-def friend_requests(request):
+def friend_requests(request, profile_id ):
+    profile = get_object_or_404(Profile, id=profile_id)
     if request.method == "POST":
         friend_request_id = request.POST.get('friend_request_id')
         action = request.POST.get('action')
@@ -25,7 +27,7 @@ def friend_requests(request):
                 friend_request.save()
                 messages.success(request, "Friend request denied.")
         
-        return redirect('friend_requests')
+        return redirect('profile', profile_id)
 
     # profile = get_object_or_404(Profile, id=profile_id)
 
