@@ -240,7 +240,7 @@ hr.style-one {
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form method="post" action="{% url 'messages' profile.id %}">
+					<form method="post" action="{% url 'send_message' profile.id %}">
 						{% csrf_token %}
 						<div class="form-group">
 							<label for="message-text" class="col-form-label">Message:</label>

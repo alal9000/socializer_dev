@@ -9,9 +9,11 @@ from .models import Message
 from app.decorators import check_profile_id
 from app.models import Profile
 from notifications.models import Notification
+
 @login_required
 @check_profile_id
 def direct_messages(request, profile_id):
+
     receiver_profile = Profile.objects.get(id=profile_id)
 
     latest_message_ids = (
@@ -26,31 +28,6 @@ def direct_messages(request, profile_id):
         id__in=latest_messages.values_list("sender", flat=True)
     )
 
-    # DM from profile page
-    if request.method == "POST":
-        print("POST request received")  # Debug statement
-        message_text = request.POST.get("message")
-        sender_profile = request.user.profile
-        recipient_profile = Profile.objects.get(id=profile_id)
-
-        if message_text:
-            print("Creating message")  # Debug statement
-            Message.objects.create(
-                sender=sender_profile,
-                receiver=recipient_profile,
-                message=message_text,
-                timestamp=timezone.now(),
-            )
-
-            Notification.objects.create(
-                user=receiver_profile,
-                message="You have a new message",
-                link=f"/direct_messages/messages/{receiver_profile.id}",
-            )
-            print("Message and notification created")  # Debug statement
-
-        return redirect("home")
-
     context = {
         "senders": senders,
         "receiver": receiver_profile,
@@ -58,6 +35,36 @@ def direct_messages(request, profile_id):
     }
 
     return render(request, "direct_messages/messages.html", context)
+
+
+@login_required
+def send_message(request, pk):
+    receiver_profile = Profile.objects.get(id=pk)
+    message_text = request.POST.get("message")
+    sender_profile = request.user.profile
+    recipient_profile = Profile.objects.get(id=pk)
+
+    if message_text:
+        Message.objects.create(
+            sender=sender_profile,
+            receiver=recipient_profile,
+            message=message_text,
+            timestamp=timezone.now(),
+        )
+
+        Notification.objects.create(
+            user=receiver_profile,
+            message="You have a new message",
+            link=f"/direct_messages/messages/{receiver_profile.id}",
+        )
+        messages.success(request, "Message sent successfully.")
+
+        return redirect("home")
+    
+    else:
+        messages.success(request, "Message did not send successfully.")
+        return redirect("home")
+
 
 
 def conversation_view(request, sender_id, receiver_id):
@@ -90,9 +97,9 @@ def conversation_view(request, sender_id, receiver_id):
                 )
 
                 Notification.objects.create(
-                    user=receiver_profile,
+                    user=sender_profile,
                     message="You have a new message",
-                    link=f"/direct_messages/messages/{receiver_profile.id}",
+                    link=f"/direct_messages/messages/{sender_profile.id}",
                 )
 
             return redirect(

@@ -35,8 +35,10 @@ today:
 
 1. unauthorized messages inbox access x
 2. BS login and signup forms
-3. fix path for message notification
+3. fix path for message notification x
 4. when a user approves or denys a friend request, then that notification is removed from the db
+5. make sure messages template is scrollable
+6. messages from reply interface in conversation view is not being marked as read correctly
 
 
 
