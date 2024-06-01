@@ -9,12 +9,10 @@ from .models import Message
 from app.decorators import check_profile_id
 from app.models import Profile
 from notifications.models import Notification
-
-
 @login_required
 @check_profile_id
-def direct_messages(request, pk):
-    receiver_profile = Profile.objects.get(id=pk)
+def direct_messages(request, profile_id):
+    receiver_profile = Profile.objects.get(id=profile_id)
 
     latest_message_ids = (
         Message.objects.filter(receiver=receiver_profile)
@@ -33,7 +31,7 @@ def direct_messages(request, pk):
         print("POST request received")  # Debug statement
         message_text = request.POST.get("message")
         sender_profile = request.user.profile
-        recipient_profile = Profile.objects.get(id=pk)
+        recipient_profile = Profile.objects.get(id=profile_id)
 
         if message_text:
             print("Creating message")  # Debug statement
@@ -62,8 +60,6 @@ def direct_messages(request, pk):
     return render(request, "direct_messages/messages.html", context)
 
 
-@login_required
-@check_profile_id
 def conversation_view(request, sender_id, receiver_id):
     if request.user.profile.pk == int(receiver_id):
         sender_profile = get_object_or_404(Profile, id=sender_id)
@@ -96,7 +92,7 @@ def conversation_view(request, sender_id, receiver_id):
                 Notification.objects.create(
                     user=receiver_profile,
                     message="You have a new message",
-                    link="/messages/",
+                    link=f"/direct_messages/messages/{receiver_profile.id}",
                 )
 
             return redirect(

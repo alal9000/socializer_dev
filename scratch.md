@@ -16,7 +16,6 @@ todo:
 
 
 -change email functionality
--finish profile settings page
 -show / hide friend count
 -change message implementation so people can't see each others messages page
 -edit / save toggle functionality to update the forms on the front end
@@ -34,8 +33,10 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 ==========================================================
 today:
 
-1. unauthorized messages inbox access 
-2. 
+1. unauthorized messages inbox access x
+2. BS login and signup forms
+3. fix path for message notification
+4. when a user approves or denys a friend request, then that notification is removed from the db
 
 
 

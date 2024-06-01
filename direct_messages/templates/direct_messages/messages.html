@@ -51,12 +51,8 @@
         <section>
           <h1>Messages</h1>
           <h3>Search conversation</h3>
-          <input
-            type="text"
-            id="search-input"
-            class="form-control w-50 p-2 rounded border border-grey mb-2"
-            placeholder="Name..."
-          />
+          <input type="text" id="search-input" class="form-control w-50 p-2 rounded border border-grey mb-2"
+            placeholder="Name..." />
         </section>
 
         <!-- Chat area -->
@@ -64,10 +60,7 @@
           <div id="chat-area-messages">
             <ul class="p-0">
               {% for message in latest_messages %}
-              <a
-                href="{% url 'conversation' message.sender.id receiver.id %}"
-                class="message-link"
-              >
+              <a href="{% url 'conversation' message.sender.id receiver.id %}" class="message-link">
                 <div class="container-chat">
                   <img src="{{message.sender.profile_pic.url}}" alt="Avatar" />
                   <p class="username">{{message.sender.user.first_name}}</p>
@@ -79,7 +72,8 @@
                   <span class="time">11:00</span>
                 </div>
               </a>
-              {% endfor %} {% if not latest_messages %}
+              {% endfor %}
+              {% if not latest_messages %}
               <div>
                 <h1>No direct messages yet</h1>
               </div>
