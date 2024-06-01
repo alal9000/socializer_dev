@@ -33,7 +33,7 @@ today:
 1. unauthorized messages inbox access x
 2. BS login and signup forms
 3. fix path for message notification x
-4. when a user clicks on a notification, then that notification should be dismissed after the link is followed
+4. when a user clicks on a notification, then that notification should be dismissed after the link is followed x
 5. make sure messages can be removed in message template
 
 6. messages from reply interface in conversation view is not being marked as read correctly x
@@ -41,6 +41,7 @@ today:
 8. notifications is currently doubled up in the url x
 9. need to build out the friend page
 10. outgoing messages should show in the senders messages page
-11. fix categories (turn to albums) on photo page
+11. fix categories (turn to albums) on photo page. Add album option?
+12. ability to add multiple photos to albums
 
 

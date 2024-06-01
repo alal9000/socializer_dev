@@ -7,8 +7,11 @@ from . models import Friend
 from app.models import Profile
 
 # Create your views here.
-def friends(request):
-    friends = Friend.objects.all()
+def friends(request, profile_id):
+    profile = get_object_or_404(Profile, id=profile_id)
+
+    friends = Friend.objects.filter(sender=profile, status='accepted') | Friend.objects.filter(receiver=profile, status='accepted') 
+
     return render(request, 'friends/friends.html', {"friends": friends})
 
 @login_required
