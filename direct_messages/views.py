@@ -81,8 +81,9 @@ def conversation_view(request, sender_id, receiver_id):
         conversation_messages = messages_sent_by_sender | messages_sent_by_receiver
         conversation_messages = conversation_messages.order_by("timestamp")
 
-        unread_messages = conversation_messages.filter(is_read=False)
-        unread_messages.update(is_read=True)
+        # Filter unread messages based on the receiver
+        unread_messages = conversation_messages.filter(is_read=False, receiver=receiver_profile)
+        unread_messages.update(is_read=True)  
 
         if request.method == "POST":
             message_text = request.POST.get("message")

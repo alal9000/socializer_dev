@@ -24,9 +24,6 @@ todo:
 -make sure when users check each others photos, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another users photos)
 -check if user needs to be logged in to access that resource first and then if it actually exisits - do this to make sure all 404s are handled
 -create 10 fake users A - I, then do vigourous testing
--notifications overflow past the footer when long
-
-
 
 git rm --cached */__pycache__/* - remove pycache from tracked files
 
@@ -36,9 +33,13 @@ today:
 1. unauthorized messages inbox access x
 2. BS login and signup forms
 3. fix path for message notification x
-4. when a user approves or denys a friend request, then that notification is removed from the db
-5. make sure messages template is scrollable
-6. messages from reply interface in conversation view is not being marked as read correctly
+4. when a user clicks on a notification, then that notification should be dismissed after the link is followed
+5. make sure messages can be removed in message template
 
+6. messages from reply interface in conversation view is not being marked as read correctly x
+7. right time set to DMs x
+8. notifications is currently doubled up in the url x
+9. need to build out the friend page
+10. outgoing messages should show in the senders messages page
 
 
