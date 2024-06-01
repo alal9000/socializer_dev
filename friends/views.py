@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+
+from app.decorators import check_profile_id
+from django.contrib.auth.decorators import login_required
 from . models import Friend
 from app.models import Profile
 
@@ -8,7 +11,8 @@ def friends(request):
     friends = Friend.objects.all()
     return render(request, 'friends/friends.html', {"friends": friends})
 
-
+@login_required
+@check_profile_id
 def friend_requests(request, profile_id ):
     profile = get_object_or_404(Profile, id=profile_id)
     if request.method == "POST":

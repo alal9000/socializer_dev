@@ -1,17 +1,23 @@
 {% extends "app/main.html" %}
 {% block content %}
 
-<div class="container">
+<style>
+  .viewport-height {
+    height: 70vh; 
+}
+</style>
+
+<div class="container viewport-height">
   {% if messages %}
-    <div>
-      {% for message in messages %}
-      <div class="alert alert-success alert-dismissible alert-fixed fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      {% endfor %}
+  <div>
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
   <div class="row">
     <div class="col-md">
       <!-- user detail form -->
@@ -20,29 +26,49 @@
           {% csrf_token %}
           {{user_form.as_p}}
 
-        <input class="btn btn-primary" type="submit" name="user-details" value="update-details">
+          <input class="btn btn-primary" type="submit" name="user-details" value="update-details">
         </form>
       </div>
-      <form method="POST" action="{% url 'delete_account' %}" enctype="multipart/form-data" class="mt-2 d-flex align-items-center">
+      <form id="delete-account-form" method="POST" action="{% url 'delete_account' %}" enctype="multipart/form-data"
+        class="mt-2 d-flex align-items-center">
         {% csrf_token %}
         <p class="m-0 me-2">Delete your account permanently</p>
-        <button id="delete-account-btn" class="btn btn-danger">Delete Account</button>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+          Delete Account
+        </button>
       </form>
     </div>
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmDeleteModalLabel">Confirm Account Deletion</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete your account permanently? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="delete-account-btn">Delete Account</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
-  var button = document.getElementById("delete-account-btn");
-  button.addEventListener("click", function() {
-    if (confirm('Are you sure you want to delete your account?')) {
+  document.addEventListener('DOMContentLoaded', function () {
+    var button = document.getElementById("delete-account-btn");
+
+    button.addEventListener("click", function () {
       document.getElementById('delete-account-form').submit();
-    }
-    else {
-      event.preventDefault();
-    }
-      
+    });
   });
 </script>
-
 {% endblock %}

@@ -34,9 +34,8 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 ==========================================================
 today:
 
-1. profile settings page
-2. notifications overflow issue x
-3. unauthorized messages inbox access 
-4. friend request add profile pic to notification x
+1. unauthorized messages inbox access 
+2. 
+
 
 
