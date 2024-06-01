@@ -1,12 +1,12 @@
-{% extends "app/main.html" %} 
-{% block content %} 
-{% load account %} 
+{% extends "app/main.html" %}
+{% block content %}
+{% load account %}
 {% load static %}
 
 <style>
-	.profile-pic{
+	.profile-pic {
 		max-width: 200px;
-		max-height:200px;
+		max-height: 200px;
 		margin: 0 auto;
 		border-radius: 50%;
 	}
@@ -18,24 +18,25 @@
 		object-fit: cover;
 	}
 
-.gallery {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
+	.gallery {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
 
-.gallery-item {
-  flex: 50px 50px 50px 50px; /* Adjust the width of each column as needed */
-  margin-bottom: 20px;
-	background-color: brown;
-}
+	.gallery-item {
+		flex: 50px 50px 50px 50px;
+		/* Adjust the width of each column as needed */
+		margin-bottom: 20px;
+		background-color: brown;
+	}
 
-.gallery-item img {
-  max-width: 100%;
-  height: auto;
-}
+	.gallery-item img {
+		max-width: 100%;
+		height: auto;
+	}
 
-/* .alert-fixed {
+	/* .alert-fixed {
     position:fixed; 
     top: 0px; 
     left: 0px; 
@@ -45,194 +46,196 @@
 		margin-top: 56px;
 } */
 
-.profile-albums {
-	max-width: 45%;
-}
+	.profile-albums {
+		max-width: 45%;
+	}
 
-hr.style-one {
-    border: 0;
-    height: 1px;
-    background: #333;
-    background-image: linear-gradient(to right, #ccc, #333, #ccc);
-}
+	hr.style-one {
+		border: 0;
+		height: 1px;
+		background: #333;
+		background-image: linear-gradient(to right, #ccc, #333, #ccc);
+	}
 </style>
 
 <section>
-  <div class="container mt-2">
+	<div class="container mt-2">
 		{% if messages %}
-    <div>
-      {% for message in messages %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-    <div class="row">
+		<div>
+			{% for message in messages %}
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
+				{{ message }}
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+			{% endfor %}
+		</div>
+		{% endif %}
+		<div class="row">
 
 			<!-- column 1 -->
-      <div class="col-md">
+			<div class="col-md">
 				<!-- user name and profile image -->
-        <div class="card card-body">
-          <form action="#" method="post" class="w-100">
-            {% if request.user.profile != profile %} 
-							{% csrf_token %} 
-							{% if button == "Add" %}
-							<form action="#" method="post" class="w-100">
-									{% csrf_token %}
-									<button class="btn btn-primary w-100" name="friend-button" value="Add">
-											Add Friend
-									</button>
-							</form>
-							{% elif button == "Pending" %}
-									{% csrf_token %}
-									<button disabled class="btn btn-danger w-100" name="friend-button" value="Pending">
-											Friend Request Sent
-									</button>
-							{% elif button == "Accepted" %}
-							<p>You and {{ profile.user.first_name }} are friends</p>
-							{% endif %}  
+				<div class="card card-body mb-2">
+					<form action="#" method="post" class="w-100">
+						{% if request.user.profile != profile %}
+						{% csrf_token %}
+						{% if button == "Add" %}
+						<form action="#" method="post" class="w-100">
+							{% csrf_token %}
+							<button class="btn btn-primary w-100" name="friend-button" value="Add">
+								Add Friend
+							</button>
+						</form>
+						{% elif button == "Pending" %}
+						{% csrf_token %}
+						<button disabled class="btn btn-danger w-100" name="friend-button" value="Pending">
+							Friend Request Pending
+						</button>
+						{% elif button == "Accepted" %}
+						<p>You and {{ profile.user.first_name }} are friends</p>
 						{% endif %}
-          </form>
+						{% endif %}
+					</form>
 
 					<!-- message button -->
-          {% if request.user.profile != profile %}
-						<a
-							class="btn btn-warning mt-2"
-							href="#"
-							data-bs-toggle="modal"
-							data-bs-target="#reg-modal"
-							>Message</a
-						>
-          {% endif %}
-          <hr class="style-one" />
-          <h3 style="text-align: center">
-            {{ profile.user.first_name|capfirst}} {{profile.user.last_name|capfirst|slice:":1" }}
-          </h3>
-          <hr class="style-one" />
-          {% if profile.profile_pic %}
-          	<img class="profile-pic" src="{{profile.profile_pic.url}}" />
-          {% else %}
-						<img
-							class="profile-pic"
-							src="{% static 'images/profile2.png' %}"
-							alt="Default Profile Picture"
-						/>
-          {% endif %}
+					{% if request.user.profile != profile %}
+					<a class="btn btn-warning mt-2" href="#" data-bs-toggle="modal" data-bs-target="#reg-modal">Message</a>
+					{% else %}
+					<!-- user settings link -->
+				<a href="{% url 'profile_settings' profile.id %}" class="btn btn-secondary w-100 mt-2">User settings</a>
+					{% endif %}
+					<hr class="style-one" />
+					<h3 style="text-align: center">
+						{{ profile.user.first_name|capfirst}} {{profile.user.last_name|capfirst|slice:":1" }}
+					</h3>
+					<hr class="style-one" />
+					{% if profile.profile_pic %}
+					<img class="profile-pic" src="{{profile.profile_pic.url}}" />
+					{% else %}
+					<img class="profile-pic" src="{% static 'images/profile2.png' %}" alt="Default Profile Picture" />
+					{% endif %}
 
 
 
-        </div>
+				</div>
 				{% if request.user.profile == profile %}
 				<!-- profile pic form -->
-					<div class="card card-body mt-2">
-						<form method="POST" action="" enctype="multipart/form-data">
-							{% csrf_token %}
-							{{profile_form.as_p}}
-					
+				<div class="card card-body mb-2">
+					<form method="POST" action="" enctype="multipart/form-data">
+						{% csrf_token %}
+						{{profile_form.as_p}}
+
 						<input class="btn btn-primary" type="submit" name="profile-pic" value="update-image">
-						</form>
-					</div>
+					</form>
+					
+				</div>
 
-					<!-- profile description -->
-					<div class="card card-body mt-2">
-						<form method="POST" action="">
-								{% csrf_token %}
-								{{ description_form.as_p }}
-								<button class="btn btn-primary mt-2" type="submit" name="update-description">Update Description</button>
-						</form>
-					</div>
+				<!-- profile description -->
+				<div class="card card-body mb-2">
+					<form method="POST" action="">
+						{% csrf_token %}
+						{{ description_form.as_p }}
+						<button class="btn btn-primary mt-2" type="submit" name="update-description">Update Description</button>
+					</form>
+				</div>
 
-					<!-- user settings link -->
-					<a href="{% url 'profile_settings' profile.id %}" class="btn btn-secondary w-100 mt-2">User settings</a>
+				
 				{% endif %}
-  		</div>
-
-
-
+			</div>
 
 
 			<!-- column 2 -->
-			
-      <div class="col-md mb-2">
-				<div class="card card-body">
-				<div>
-					<h1><a href="{% url 'gallery' profile.id %}" class="text-decoration-none">{{ profile.user.first_name|capfirst}}'s Photo Gallery</a></h1>
-				{% if user_photos %}
-					{% for photo in user_photos %}
-						<a href="{% url 'gallery' profile.id %}"><img src="{{photo.image.url}}" alt="" class="profile-albums mb-2"></a>
-					{% endfor %}
-				{% else %}
-					<p>User has not uploaded any photos</p>
-				{% endif %}
+			<div class="col-md">
+				<div class="card card-body mb-2">
+					<div>
+						<h1>Friends</h1>
+						<ul class="list-unstyled">
+							{% for friend in friends %}
+							<li class="mb-2">
+								<a href="{% url 'profile' friend.id %}" class="text-decoration-none">
+									{% if friend.profile_pic %}
+									<img class="avatar" src="{{ friend.profile_pic.url }}" alt="Avatar">
+									{% else %}
+									<img class="avatar" src="{% static 'images/default_profile_pic.png' %}" alt="Avatar">
+									{% endif %}
+									{{ friend.user.first_name }}
+								</a>
+							</li>
+							<hr class="style-one">
+							{% endfor %}
+						</ul>
+						{% if request.user.profile == profile %}
+							<a href="{% url 'friend_requests' profile.id %}" class="btn btn-primary w-100">Friend Requests</a>
+						{% endif %}
+					</div>
 				</div>
-			</div>
 
-				
-			</div>
-
-
-			<!-- column 3 -->
-      <div class="col-md">
-				<div class="card card-body">
+				<div class="card card-body mb-2">
 					<div>
 						<h1>Events Attending</h1>
-					<ul class="list-unstyled">
+						<ul class="list-unstyled">
 							{% for event in attended_events %}
-									<li><a href="{% url 'event' event.id %}" class="text-decoration-none"><img class="avatar" src="{{ event.host.profile_pic.url }}" alt="Avatar">{{ event.event_title }}</a></li>
-									<hr class="style-one">
+							<li><a href="{% url 'event' event.id %}" class="text-decoration-none"><img class="avatar"
+										src="{{ event.host.profile_pic.url }}" alt="Avatar">{{ event.event_title }}</a></li>
+							<hr class="style-one">
 							{% empty %}
-									<li>No events attended yet.</li>
+							<li>No events attended yet.</li>
 							{% endfor %}
-					</ul>
-	
-					<h1 class="mt-5">Events Hosting </h1>
-					<ul class="list-unstyled">
+						</ul>
+
+						<h1 class="mt-5">Events Hosting </h1>
+						<ul class="list-unstyled">
 							{% for event in hosted_events %}
 							<li>
 								<a href="{% url 'event' event.id %}" class="text-decoration-none">
-										<img class="avatar" src="{{ event.host.profile_pic.url }}" alt="Avatar">
-										{{ event.event_title }}
+									<img class="avatar" src="{{ event.host.profile_pic.url }}" alt="Avatar">
+									{{ event.event_title }}
 								</a>
-						</li>
-						<hr class="style-one">
+							</li>
+							<hr class="style-one">
 							{% empty %}
-									<li>No events hosted yet.</li>
+							<li>No events hosted yet.</li>
 							{% endfor %}
-					</ul>
+						</ul>
 					</div>
 				</div>
 
-				<div class="card card-body mt-2">
+
+
+			</div>
+
+
+
+
+
+			<!-- column 3 -->
+
+			<div class="col-md mb-2">
+				<div class="card card-body">
 					<div>
-							<h1>Friends</h1>
-							<ul class="list-unstyled">
-									{% for friend in friends %}
-											<li class="mb-2">
-													<a href="{% url 'profile' friend.id %}" class="text-decoration-none">
-															{% if friend.profile_pic %}
-																	<img class="avatar" src="{{ friend.profile_pic.url }}" alt="Avatar">
-															{% else %}
-																	<img class="avatar" src="{% static 'images/default_profile_pic.png' %}" alt="Avatar">
-															{% endif %}
-															{{ friend.user.first_name }}
-													</a>
-											</li>
-											<hr class="style-one">
-									{% endfor %}
-							</ul>
+						<h1><a href="{% url 'gallery' profile.id %}"
+								class="text-decoration-none">{{ profile.user.first_name|capfirst}}'s Photo Gallery</a></h1>
+						{% if user_photos %}
+						{% for photo in user_photos %}
+						<a href="{% url 'gallery' profile.id %}"><img src="{{photo.image.url}}" alt=""
+								class="profile-albums mb-2"></a>
+						{% endfor %}
+						{% else %}
+						<p>User has not uploaded any photos</p>
+						{% endif %}
 					</div>
+				</div>
+
+
 			</div>
 
 
-				
-			</div>
-    </div>
-  </div>
+			
+		</div>
+	</div>
 
 	<!-- modal -->
-  <div class="modal fade" id="reg-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+	<div class="modal fade" id="reg-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">

@@ -41,5 +41,6 @@ today:
 8. notifications is currently doubled up in the url x
 9. need to build out the friend page
 10. outgoing messages should show in the senders messages page
+11. fix categories (turn to albums) on photo page
 
 

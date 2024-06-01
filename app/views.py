@@ -153,7 +153,7 @@ def profile(request, profile_id):
         receiver=profile, status="accepted"
     ).values_list("sender", flat=True)
     friend_ids = list(friends_as_sender) + list(friends_as_receiver)
-    friends = Profile.objects.filter(id__in=friend_ids)
+    friends = Profile.objects.filter(id__in=friend_ids)[:4]
 
     # initalize forms
     profile_form = ProfileForm(instance=profile)
