@@ -148,7 +148,7 @@
 			<div class="col-md">
 				<div class="card card-body mb-2">
 					<div>
-						<h1>Friends</h1>
+						<a href="{% url 'friends' profile.id %}"><h1>Friends</h1></a>
 						<ul class="list-unstyled">
 							{% for friend in friends %}
 							<li class="mb-2">

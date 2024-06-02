@@ -8,14 +8,19 @@
 <section>
   <div class="container">
     <div class="row">
-      <div class="col">
-
-        <h1>Hello world</h1>
-
+      <div class="col text-center">
+        <h1>Friends of {{ profile.user.first_name }}</h1>
+        <ul class="list-unstyled">
+          {% for friend in friends %}
+          <li>{{ friend }}</li>
+          {% empty %}
+          <li>No friends found.</li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
   </div>
-  
+
 </section>
 
 
