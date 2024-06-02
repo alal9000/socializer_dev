@@ -1,50 +1,65 @@
 {% extends "app/main.html" %}
 {% load allauth i18n %}
+{% load allauth account %}
+
 {% block head_title %}
-    {% trans "Signup" %}
+{% trans "Signup" %}
 {% endblock head_title %}
+
 {% block content %}
-
-
-    <section>
-      <div class="container">
+<section>
+    <div class="container">
         <div class="row">
-          <div class="col d-flex flex-column align-items-center justify-content-center vh-100">
-            <h1>Sign Up</h1>
-          {% setvar link %}
+            <div class="col d-flex flex-column align-items-center justify-content-center vh-100">
+                <h1>Sign Up</h1>
+                {% if not SOCIALACCOUNT_ONLY %}
+                {% setvar link %}
               <a href="{{ login_url }}">
               {% endsetvar %}
               {% setvar end_link %}
               </a>
           {% endsetvar %}
           <p>{% blocktranslate %}Already have an account? Then please {{ link }}login{{ end_link }}.{% endblocktranslate %}</p>
-          {% if not SOCIALACCOUNT_ONLY %}
-              {% url 'account_signup' as action_url %}
-              {% element form form=form method="post" action=action_url tags="entrance,signup" %}
-                  {% slot body %}
-                      {% csrf_token %}
-                      {% element fields form=form unlabeled=True %}
-                      {% endelement %}
-                      {{ redirect_field }}
-                  {% endslot %}
-                  {% slot actions %}
-                      {% element button tags="prominent,signup" type="submit" %}
-                          {% trans "Sign Up" %}
-                      {% endelement %}
-                  {% endslot %}
-              {% endelement %}
-          {% endif %}
-          {% if SOCIALACCOUNT_ENABLED %}
-              {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-          {% endif %}
-          </div>
+                {% url 'account_signup' as action_url %}
+                <form method="post" action="{{ action_url }}">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                        {{ form.password1 }}
+                        {{ form.password1.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                        {{ form.password2 }}
+                        {{ form.password2.errors }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">{% trans "Sign Up" %}</button>
+                    {{ redirect_field }}
+                </form>
+                {% endif %}
+                {% if SOCIALACCOUNT_ENABLED %}
+                {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+                {% endif %}
+            </div>
         </div>
-
-
-        
-
-      </div>
-    </section>
+    </div>
+</section>
 
 
 

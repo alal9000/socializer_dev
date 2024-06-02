@@ -23,7 +23,12 @@ todo:
 -make sure when users check each others messages, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another message profile)
 -make sure when users check each others photos, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another users photos)
 -check if user needs to be logged in to access that resource first and then if it actually exisits - do this to make sure all 404s are handled
+
+-make sure when names are entered in the signup form , we save it in the db as capitalized
+
 -create 10 fake users A - I, then do vigourous testing
+
+
 
 git rm --cached */__pycache__/* - remove pycache from tracked files
 

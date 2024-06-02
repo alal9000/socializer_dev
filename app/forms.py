@@ -66,6 +66,11 @@ class CustomSignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields.pop('username', None)
+        self.fields['first_name'].widget.attrs.update({'class': 'form-control mb-2'})
+        self.fields['last_name'].widget.attrs.update({'class': 'form-control mb-2'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control mb-2'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control mb-2'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control mb-2'})
 
     def signup(self, request, user):
         user.first_name = self.cleaned_data['first_name']
@@ -79,7 +84,8 @@ class CustomLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields.pop('username', None) 
-        self.fields['login'].label = 'Email'  
+        self.fields['login'].widget.attrs.update({'class': 'form-control mb-2'})
+        self.fields['password'].widget.attrs.update({'class': 'form-control'})  
 
     def login(self, *args, **kwargs):
 

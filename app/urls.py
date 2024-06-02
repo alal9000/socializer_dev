@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import views
-from .views import CustomSignupView, CustomLoginView
+from . views import CustomSignupView, CustomLoginView
 
 urlpatterns = [
   path('', views.home, name="home"),

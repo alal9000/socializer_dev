@@ -10,13 +10,19 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from allauth.account.views import SignupView, LoginView
 from django.db.models import Q, Count, F, Value
 from django.db.models.functions import Coalesce
-from friends.models import Friend
 
+from friends.models import Friend
 from .models import Profile
 from .decorators import check_profile_id
 from notifications.models import Notification
 from photos.models import Photo
-from .forms import ProfileForm, UserUpdateForm, ProfileDescriptionForm
+from .forms import (
+    ProfileForm,
+    UserUpdateForm,
+    ProfileDescriptionForm,
+    CustomSignupForm,
+    CustomLoginForm,
+)
 from events.models import Event
 
 
@@ -132,7 +138,7 @@ def profile(request, profile_id):
     ).filter(
         event_date__gt=twenty_four_hours_ago_date
     )
-    
+
     # Filter hosted events
     hosted_events = Event.objects.filter(host=profile).filter(
         event_date__gte=twenty_four_hours_ago_date
@@ -261,6 +267,8 @@ def delete_account(request):
 
 # class based views
 class CustomSignupView(SignupView):
+    form_class = CustomSignupForm
+    template_name = "account/signup.html"
     default_success_url = reverse_lazy("home")
 
     def get_success_url(self):
@@ -269,29 +277,27 @@ class CustomSignupView(SignupView):
     def form_valid(self, form):
         response = super().form_valid(form)
         first_name = form.cleaned_data.get("first_name")
-        if first_name:
-            messages.success(
-                self.request,
-                f"Welcome, {first_name}! Your account was created successfully.",
-            )
-        else:
-            messages.success(
-                self.request, "Welcome! Your account was created successfully."
-            )
+        messages.success(
+            self.request,
+            f"Welcome, {first_name}! Your account was created successfully.",
+        )
+
         return response
 
 
 class CustomLoginView(LoginView):
+    form_class = CustomLoginForm
+    template_name = "account/login.html"
+
     def get_success_url(self):
         return reverse_lazy("home")
 
     def form_valid(self, form):
         response = super().form_valid(form)
         first_name = self.request.user.first_name
-        if first_name:
-            messages.success(
-                self.request, f"Welcome, {first_name}! You have successfully logged in."
-            )
-        else:
-            messages.success(self.request, "Welcome! You have successfully logged in.")
+ 
+        messages.success(
+            self.request, f"Welcome, {first_name}! You have successfully logged in."
+        )
+        
         return response
