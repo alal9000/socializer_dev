@@ -39,7 +39,7 @@ def addPhoto(request, profile_id):
 
     if request.method == "POST":
         data = request.POST
-        image = request.FILES.get("image")
+        images = request.FILES.getlist("images")
 
         if data["category"] != "none":
             category = Category.objects.get(id=data["category"])
@@ -50,7 +50,8 @@ def addPhoto(request, profile_id):
         else:
             category = None
 
-        Photo.objects.create(
+        for image in images:
+            Photo.objects.create(
             category=category,
             description=data["description"],
             image=image,

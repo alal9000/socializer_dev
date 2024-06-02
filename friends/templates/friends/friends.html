@@ -4,24 +4,23 @@
 
 <style>
   .avatar {
-		width: 50px;
-		border-radius: 100%;
-		margin-right: 5px;
-		object-fit: cover;
-	}
+    width: 50px;
+    border-radius: 100%;
+    margin-right: 5px;
+    object-fit: cover;
+  }
 
   hr.style-one {
-		border: 0;
-		height: 1px;
-		background: #333;
-		background-image: linear-gradient(to right, #ccc, #333, #ccc);
-	}
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+  }
 
   .viewport-height {
     height: 70vh;
     overflow-y: auto;
   }
-
 </style>
 
 <!-- main section -->
@@ -31,14 +30,18 @@
       <div class="col viewport-height">
         <h1>Friends of {{ profile.user.first_name }}</h1>
         <ul class="list-unstyled">
-          {% for friend in friends %}
-            {% if friends %}
-              <li class="mb-3"><a class="text-decoration-none" href="{% url 'profile' friend.id %}"><img class="avatar" src="{{ friend.profile_pic.url }}" alt=""> {{ friend.user.first_name }}</a><hr class="style-one"></li>
+          {% if friends %}
+            {% for friend in friends %}
+            <li class="mb-3"><a class="text-decoration-none" href="{% url 'profile' friend.id %}"><img class="avatar"
+                  src="{{ friend.profile_pic.url }}" alt=""> {{ friend.user.first_name }}</a>
+              <hr class="style-one">
+            </li>
 
+            {% endfor %}
+            
             {% else %}
-              <li>Friends Pending..</li>
-            {% endif %}
-          {% endfor %}
+            <li>Friends Pending..</li>
+          {% endif %}
         </ul>
       </div>
     </div>
