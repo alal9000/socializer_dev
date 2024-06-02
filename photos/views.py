@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from app.models import Profile
-from .models import Category, Photo
+from .models import Album, Photo
 from app.decorators import check_profile_id
 
 # Create your views here.
@@ -15,7 +15,7 @@ def gallery(request, profile_id):
     else:
         photos = Photo.objects.filter(profile=profile, category__name=category)
 
-    categories = Category.objects.all()
+    categories = Album.objects.all()
 
     context = {"categories": categories, "photos": photos, "profile": profile}
 
@@ -35,16 +35,16 @@ def viewPhoto(request, profile_id, photo_id):
 @check_profile_id
 def addPhoto(request, profile_id):
     profile = get_object_or_404(Profile, id=profile_id)
-    categories = Category.objects.all()
+    categories = Album.objects.all()
 
     if request.method == "POST":
         data = request.POST
         images = request.FILES.getlist("images")
 
         if data["category"] != "none":
-            category = Category.objects.get(id=data["category"])
+            category = Album.objects.get(id=data["category"])
         elif data["category_new"] != "":
-            category, created = Category.objects.get_or_create(
+            category, created = Album.objects.get_or_create(
                 name=data["category_new"]
             )
         else:
@@ -62,4 +62,26 @@ def addPhoto(request, profile_id):
 
     context = {"categories": categories, "profile": profile}
 
-    return render(request, "photos/add.html", context)
+    return render(request, "photos/add_photos.html", context)
+
+
+
+@login_required
+@check_profile_id
+def addAlbum(request, profile_id):
+    profile = get_object_or_404(Profile, id=profile_id)
+
+    if request.method == "POST":
+        data = request.POST
+        print("Here is the data dict: ", data)
+
+        if data["album"] != "":
+            Album.objects.create(name=data["album"])
+            return redirect('gallery', profile_id=profile_id)
+
+    context = {
+        "profile": profile
+    }
+
+
+    return render(request, "photos/add_album.html", context)

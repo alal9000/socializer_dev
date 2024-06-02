@@ -12,7 +12,7 @@
       <div class="row">
         <div class="col-md-3">
           <div class="card">
-            <div class="card-header">Categories</div>
+            <div class="card-header">Albums</div>
             <ul class="list-group list-group-flush">
               <li class="list-group-item"><a href="{% url 'gallery' profile.id %}">All</a></li>
 
@@ -21,7 +21,8 @@
               {% endfor %}
 
               {% if request.user.profile.id == profile.id %}
-                <a href="{% url 'add' profile.id %}" class="btn btn-dark btn-block btn-sm m-1">Add Photo</a>
+                <a href="{% url 'add_photo' profile.id %}" class="btn btn-danger btn-block btn-sm m-1">Add Photo</a>
+                <a href="{% url 'add_album' profile.id %}" class="btn btn-success btn-block btn-sm m-1">Add Album</a>
               {% endif %}
             </ul>
           </div>
