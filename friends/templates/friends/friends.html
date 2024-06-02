@@ -1,6 +1,26 @@
-{% extends "app/main.html" %} {% load static %}{% block content %}
+{% extends "app/main.html" %}
+{% load static %}
+{% block content %}
 
 <style>
+  .avatar {
+		width: 50px;
+		border-radius: 100%;
+		margin-right: 5px;
+		object-fit: cover;
+	}
+
+  hr.style-one {
+		border: 0;
+		height: 1px;
+		background: #333;
+		background-image: linear-gradient(to right, #ccc, #333, #ccc);
+	}
+
+  .viewport-height {
+    height: 70vh;
+    overflow-y: auto;
+  }
 
 </style>
 
@@ -8,20 +28,21 @@
 <section>
   <div class="container">
     <div class="row">
-      <div class="col text-center">
+      <div class="col viewport-height">
         <h1>Friends of {{ profile.user.first_name }}</h1>
         <ul class="list-unstyled">
           {% for friend in friends %}
-          <li>{{ friend }}</li>
-          {% empty %}
-          <li>No friends found.</li>
+            {% if friends %}
+              <li class="mb-3"><a class="text-decoration-none" href="{% url 'profile' friend.id %}"><img class="avatar" src="{{ friend.profile_pic.url }}" alt=""> {{ friend.user.first_name }}</a><hr class="style-one"></li>
+
+            {% else %}
+              <li>Friends Pending..</li>
+            {% endif %}
           {% endfor %}
         </ul>
       </div>
     </div>
   </div>
-
 </section>
-
 
 {% endblock %}

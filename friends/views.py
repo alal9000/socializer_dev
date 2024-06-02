@@ -16,9 +16,7 @@ def friends(request, profile_id):
         Q(sender=profile, status="accepted") | Q(receiver=profile, status="accepted")
     )
 
-    other_friends = [
-        friend.get_other_profile(profile).user.first_name for friend in friends
-    ]
+    other_friends = [friend.get_other_profile(profile) for friend in friends]
 
     return render(request, "friends/friends.html", {"friends": other_friends, "profile": profile})
 
