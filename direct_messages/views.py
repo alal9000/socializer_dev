@@ -14,7 +14,7 @@ from notifications.models import Notification
 @check_profile_id
 def direct_messages(request, profile_id):
 
-    receiver_profile = Profile.objects.get(id=profile_id)
+    receiver_profile = get_object_or_404(Profile, id=profile_id)
 
     latest_message_ids = (
         Message.objects.filter(receiver=receiver_profile)
@@ -50,16 +50,15 @@ def direct_messages(request, profile_id):
 
 
 @login_required
-def send_message(request, pk):
-    receiver_profile = Profile.objects.get(id=pk)
+def send_message(request, profile_id):
+    receiver_profile = get_object_or_404(Profile, id=profile_id)
     message_text = request.POST.get("message")
     sender_profile = request.user.profile
-    recipient_profile = Profile.objects.get(id=pk)
 
     if message_text:
         Message.objects.create(
             sender=sender_profile,
-            receiver=recipient_profile,
+            receiver=receiver_profile,
             message=message_text,
             timestamp=timezone.now(),
         )

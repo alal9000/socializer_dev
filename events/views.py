@@ -33,12 +33,15 @@ def create(request):
     })
 
 
-@login_required(login_url='account_login')
-def event(request, pk):
-    event = Event.objects.get(id=pk)
-    current_profile = request.user.profile
-    is_guest = current_profile in event.guests.all()
-    is_host = event.host == current_profile
+def event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    request_profile = None
+    if request.user.is_authenticated:
+        request_profile = request.user.profile
+
+    is_guest = request_profile in event.guests.all()
+    is_host = event.host == request_profile
 
     # calcuate how many currently registered attendees
     total_current_attendees = event.guests.count() + 1
@@ -47,23 +50,23 @@ def event(request, pk):
         # comment
         if is_guest or is_host:
             comment_text = request.POST.get('comment_text')
-            Comment.objects.create(profile=current_profile, event=event, comment=comment_text)
+            Comment.objects.create(profile=request_profile, event=event, comment=comment_text)
 
             # notify attendees when a comment is added
             attendees = [event.host] + list(event.guests.all())
             for attendee in attendees:
-                if attendee != current_profile:
+                if attendee != request_profile:
                     Notification.objects.create(
                             user=attendee,
-                            message=f'{current_profile} commented in {event.event_title}',
+                            message=f'{request_profile} commented in {event.event_title}',
                             link=reverse('event', kwargs={'pk': event.pk})
                         )
 
-            return redirect('event', pk=pk)
+            return redirect('event', pk=event_id)
 
         # join event
         if request.user.is_authenticated and not is_host:
-            event.guests.add(current_profile)
+            event.guests.add(request_profile)
 
             Notification.objects.create(
                 user=event.host,
@@ -71,7 +74,7 @@ def event(request, pk):
                 link=reverse('event', kwargs={'pk': event.pk})
                 )
 
-            return redirect('event', pk=pk)  
+            return redirect('event', pk=event_id)  
 
     
     comments = Comment.objects.filter(event=event)
@@ -89,11 +92,11 @@ def event(request, pk):
 
 @login_required
 def remove_attendee(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
-    current_user_profile = request.user.profile
+    event = get_object_or_404(Event, id=event_id)
+    request_profile = request.user.profile
 
-    if current_user_profile in event.guests.all():
-        event.guests.remove(current_user_profile)
+    if request_profile in event.guests.all():
+        event.guests.remove(request_profile)
         messages.success(request, 'Successfully removed from the event.')
     else:
         messages.error(request, 'You are not currently attending this event.')

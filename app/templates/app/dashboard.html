@@ -44,7 +44,7 @@
   class="bg-dark text-light p-5 p-lg-0 pt-lg-5 text-center text-sm-start"
 >
   <div class="container">
-    <div class="d-sm-flex align-items-center justify-content-between">
+    <div class="d-sm-flex align-items-center justify-content-between mb-2">
       <div>
         <h1>Meet, <span class="text-warning">Socialize,</span> Explore</h1>
         <p class="lead my-4">Let the good times roll with Socializer. Free for everyone.</p>
@@ -70,7 +70,9 @@
 <section>
   <div class="container">
     
-    <h1>Hi, {{request.user.first_name }} 👋</h1>
+    {% if user.is_authenticated %}
+      <h1>Hi, {{request.user.first_name }} 👋</h1>
+    {% endif %}
 
     {% if events %}
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">

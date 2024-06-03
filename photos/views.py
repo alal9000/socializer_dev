@@ -6,7 +6,7 @@ from app.models import Profile
 from .models import Album, Photo
 from app.decorators import check_profile_id
 
-# Create your views here.
+
 def gallery(request, profile_id):
     profile = get_object_or_404(Profile, id=profile_id)
 
@@ -38,7 +38,7 @@ def gallery(request, profile_id):
 
 def viewPhoto(request, profile_id, photo_id):
     profile = get_object_or_404(Profile, id=profile_id)
-    photo = Photo.objects.get(id=photo_id, profile=profile)
+    photo = get_object_or_404(Photo, id=photo_id, profile=profile)
 
     context = {"photo": photo, "profile": profile}
 

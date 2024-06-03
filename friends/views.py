@@ -24,14 +24,14 @@ def friends(request, profile_id):
 @login_required
 @check_profile_id
 def friend_requests(request, profile_id):
-    profile = get_object_or_404(Profile, id=profile_id)
+    request_profile = request.user.profile
     if request.method == "POST":
         friend_request_id = request.POST.get("friend_request_id")
         action = request.POST.get("action")
 
         if friend_request_id and action:
             friend_request = get_object_or_404(
-                Friend, id=friend_request_id, receiver=request.user.profile
+                Friend, id=friend_request_id, receiver=request_profile
             )
 
             if action == "approve":
@@ -45,13 +45,7 @@ def friend_requests(request, profile_id):
 
         return redirect("profile", profile_id)
 
-    # profile = get_object_or_404(Profile, id=profile_id)
-
-    # print("profile is: ", profile)
-
-    requests = Friend.objects.filter(status="pending", receiver=request.user.profile)
-
-    print("queryset is: ", requests)
+    requests = Friend.objects.filter(status="pending", receiver=request_profile)
 
     context = {
         "requests": requests,
