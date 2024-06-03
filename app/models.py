@@ -6,6 +6,9 @@ class Profile(models.Model):
   profile_pic = models.ImageField(default="profile2.png", null=True, blank=True)
   date_created = models.DateTimeField(auto_now_add=True, null=True)
   description = models.CharField(max_length=500, null=True, blank=True)
+  friend_visibility = models.BooleanField(default=True, null=True)
+
+  
 
   def __str__(self):
     return f"{self.user}"

@@ -15,25 +15,35 @@
     background: #333;
     background-image: linear-gradient(to right, #ccc, #333, #ccc);
   }
+
+  .viewport-height {
+    height: 70vh;
+    overflow-y: auto;
+  }
 </style>
 
 <section>
-  <div class="container">
+  <div class="container viewport-height">
     <div class="row">
       <div class="col">
+        <h1 class="text-center">Friend Requests</h1>
         <ul class="list-unstyled d-flex justify-content-center">
-          {% for request in requests %}
-          <li class="mt-2 bg-grey">
-            You have a friend request from <a href="{% url 'profile' request.sender.id %}"><img class="avatar" src="{{ request.sender.profile_pic.url}}" alt=""> {{ request.sender.user.first_name }}</a>
-            <form action="" method="post">
-              {% csrf_token %}
-              <input type="hidden" name="friend_request_id" value="{{ request.id }}">
-              <button class="btn btn-primary" type="submit" name="action" value="approve">Approve</button>
-              <button class="btn btn-danger" type="submit" name="action" value="deny">Decline</button>
-            </form>
-            <hr class="style-one">
-          </li>
-          {% endfor %}
+          {% if requests %}
+            {% for request in requests %}
+            <li class="mt-2 bg-grey">
+              You have a friend request from <a href="{% url 'profile' request.sender.id %}"><img class="avatar" src="{{ request.sender.profile_pic.url}}" alt=""> {{ request.sender.user.first_name }}</a>
+              <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="friend_request_id" value="{{ request.id }}">
+                <button class="btn btn-primary" type="submit" name="action" value="approve">Approve</button>
+                <button class="btn btn-danger" type="submit" name="action" value="deny">Decline</button>
+              </form>
+              <hr class="style-one">
+            </li>
+            {% endfor %}
+          {% else %}
+            <p><em>No friend requests to show</em></p>
+          {% endif %}
         </ul>
       </div>
     </div>

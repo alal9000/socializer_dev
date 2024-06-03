@@ -56,6 +56,10 @@
 		background: #333;
 		background-image: linear-gradient(to right, #ccc, #333, #ccc);
 	}
+
+	.placeholder-italic::placeholder {
+    font-style: italic;
+}
 </style>
 
 <section>
@@ -106,7 +110,7 @@
 					{% endif %}
 					<hr class="style-one" />
 					<h3 style="text-align: center">
-						{{ profile.user.first_name|capfirst}} {{profile.user.last_name|capfirst|slice:":1" }}
+						{{ profile.user.first_name }} {{profile.user.last_name|slice:":1" }}
 					</h3>
 					<hr class="style-one" />
 					{% if profile.profile_pic %}
@@ -135,7 +139,7 @@
 					<form method="POST" action="">
 						{% csrf_token %}
 						{{ description_form.as_p }}
-						<button class="btn btn-primary mt-2" type="submit" name="update-description">Update Description</button>
+						<button class="btn btn-primary mt-2" type="submit" name="update-description">Update About</button>
 					</form>
 				</div>
 
@@ -148,8 +152,9 @@
 			<div class="col-md">
 				<div class="card card-body mb-2">
 					<div>
-						<a href="{% url 'friends' profile.id %}"><h1>Friends</h1></a>
+						<a class="mb-3 d-inline-block text-decoration-none" href="{% url 'friends' profile.id %}"><h1>Friends {% if friends.count > 0 and friend_visibility %} ({{ friends.count }}) {% endif %}</h1></a> 
 						<ul class="list-unstyled">
+							{% if friends %}
 							{% for friend in friends %}
 							<li class="mb-2">
 								<a href="{% url 'profile' friend.id %}" class="text-decoration-none">
@@ -163,6 +168,9 @@
 							</li>
 							<hr class="style-one">
 							{% endfor %}
+							{% else %}
+								<p><em>No friends showing</em></p>
+							{% endif %}
 						</ul>
 						{% if request.user.profile == profile %}
 							<a href="{% url 'friend_requests' profile.id %}" class="btn btn-primary w-100">Friend Requests</a>
@@ -179,7 +187,7 @@
 										src="{{ event.host.profile_pic.url }}" alt="Avatar">{{ event.event_title }}</a></li>
 							<hr class="style-one">
 							{% empty %}
-							<li>No events attended yet.</li>
+							<li><em>No events attending</em></li>
 							{% endfor %}
 						</ul>
 
@@ -194,7 +202,7 @@
 							</li>
 							<hr class="style-one">
 							{% empty %}
-							<li>No events hosted yet.</li>
+							<li><em>No events hosting</em></li>
 							{% endfor %}
 						</ul>
 					</div>
@@ -214,14 +222,14 @@
 				<div class="card card-body">
 					<div>
 						<h1><a href="{% url 'gallery' profile.id %}"
-								class="text-decoration-none">{{ profile.user.first_name|capfirst}}'s Photo Gallery</a></h1>
+								class="text-decoration-none">{{ profile.user.first_name }}'s Photo Gallery</a></h1>
 						{% if user_photos %}
 						{% for photo in user_photos %}
 						<a href="{% url 'gallery' profile.id %}"><img src="{{photo.image.url}}" alt=""
 								class="profile-albums mb-2"></a>
 						{% endfor %}
 						{% else %}
-						<p>User has not uploaded any photos</p>
+						<p><em>User has not yet uploaded any photos</em></p>
 						{% endif %}
 					</div>
 				</div>

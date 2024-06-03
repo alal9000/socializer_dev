@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.utils.text import capfirst
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
@@ -101,6 +102,7 @@ def profile(request, profile_id):
     profile = Profile.objects.get(id=profile_id)
     user_photos = Photo.objects.filter(profile=profile).order_by("-timestamp")[:6]
     user_instance = profile.user
+    friend_visibility = profile.friend_visibility
 
     # Determine friendship status
     friend_status = None
@@ -221,6 +223,7 @@ def profile(request, profile_id):
         "hosted_events": hosted_events,
         "profile": profile,
         "friends": friends,
+        "friend_visibility": friend_visibility,
         "button": button,
         "description_form": description_form,
         "success_message": success_message,
@@ -242,6 +245,19 @@ def profile_settings(request, profile_id):
             user_form.save()
             messages.success(request, "User details updated successfully.")
             return redirect("profile_settings", profile_id=profile_id)
+
+    if "friend_visibility" in request.POST:
+        if request.POST["friend_visibility"] == 'hide':
+            profile.friend_visibility = False
+        else:
+            profile.friend_visibility = True
+
+        profile.save()
+        messages.success(request, "Friend visibility ammended successfully.")
+        return redirect("profile_settings", profile_id=profile_id)
+
+
+        
 
     context = {
         "profile": profile,
@@ -275,7 +291,11 @@ class CustomSignupView(SignupView):
         return self.default_success_url
 
     def form_valid(self, form):
+        form.cleaned_data['first_name'] = capfirst(form.cleaned_data['first_name'])
+        form.cleaned_data['last_name'] = capfirst(form.cleaned_data['last_name'])
+        
         response = super().form_valid(form)
+        
         first_name = form.cleaned_data.get("first_name")
         messages.success(
             self.request,

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django import forms
 from allauth.account.forms import SignupForm, LoginForm
 
+from friends.models import Friend
 from . models import Profile, User
 from events.models import Event
 
@@ -47,14 +48,23 @@ class ProfileDescriptionForm(ModelForm):
     class Meta:
         model = Profile
         fields = ['description']
+        labels = {
+            'description': 'About me'
+        }
         widgets = {
             'description': forms.Textarea(attrs={
-                'placeholder': 'Enter your profile description here...',
+                'placeholder': 'Location, hobbies, likes, dislikes...',
                 'rows': 5,
                 'cols': 40,
-                'class': 'form-control',
+                'class': 'form-control placeholder-italic',
             }),
         }
+
+
+class FriendVisibilityForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['friend_visibility']
 
 
 # user signup
