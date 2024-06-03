@@ -10,11 +10,11 @@
             <form method="POST" action="" enctype="multipart/form-data">
               {% csrf_token %}
               <div class="mb-3 m-3">
-                <label class="form-label">Description</label>
+                <label class="form-label">Description:</label>
                 <input required name="description" class="form-control" type="text" placeholder="Enter a description">
               </div>
               <div class="mb-3 m-3">
-                <label class="form-label">Select a album <em>(or create below)</em></label>
+                <label class="form-label">Select a album: <em>(or create below)</em></label>
                 <select class="form-select" name="album">
                   <option value="none">Select a album...</option>
                   {% for album in albums %}
@@ -23,11 +23,11 @@
                 </select>
               </div>
               <div class="mb-3 m-3">
-                <label class="form-label">Create a new album</label>
+                <label class="form-label">Create a new album:</label>
                 <input name="album_new" class="form-control" type="text" placeholder="Create a new album">
               </div>
               <div class="mb-3 m-3">
-                <label class="form-label">Upload Image</label>
+                <label class="form-label">Upload Image:</label>
                 <input required name="images"  multiple class="form-control" type="file">
               </div>
               <button class="btn btn-primary m-3">Submit</button>

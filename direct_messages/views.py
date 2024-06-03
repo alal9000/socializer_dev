@@ -131,5 +131,4 @@ def conversation_view(request, sender_id, receiver_id):
             },
         )
     else:
-        messages.error(request, "You do not have permission to view this page.")
         return redirect("home")

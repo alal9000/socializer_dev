@@ -253,7 +253,7 @@ def profile_settings(request, profile_id):
             profile.friend_visibility = True
 
         profile.save()
-        messages.success(request, "Friend visibility ammended successfully.")
+        messages.success(request, "Friend count changed successfully.")
         return redirect("profile_settings", profile_id=profile_id)
 
 
