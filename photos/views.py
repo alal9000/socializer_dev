@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
@@ -16,6 +17,19 @@ def gallery(request, profile_id):
         photos = Photo.objects.filter(profile=profile, album__name=album)
 
     albums = Album.objects.filter(profile=profile)
+
+    if request.method == 'POST':
+        # get POST data dict
+        data = request.POST
+        # extract data from form submission
+        album_id = data['album_id']
+        # retrieve associated album object associated with the form submission and remove it
+        album = Album.objects.get(id=album_id)
+        album.delete()
+
+        messages.success(request, "Album removed successfully")
+        return redirect('gallery', profile_id=profile_id)
+
 
     context = {"albums": albums, "photos": photos, "profile": profile}
 

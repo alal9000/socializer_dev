@@ -98,8 +98,8 @@ def contact(request):
 
 
 def profile(request, profile_id):
+    profile = get_object_or_404(Profile, id=profile_id)
     current_user_profile = request.user.profile
-    profile = Profile.objects.get(id=profile_id)
     user_photos = Photo.objects.filter(profile=profile).order_by("-timestamp")[:6]
     user_instance = profile.user
     friend_visibility = profile.friend_visibility
@@ -206,7 +206,7 @@ def profile(request, profile_id):
             description_form = ProfileDescriptionForm(request.POST, instance=profile)
             if description_form.is_valid():
                 description_form.save()
-                messages.success(request, "User description updated successfully.")
+                messages.success(request, "About me updated successfully.")
                 return redirect("profile", profile_id=profile_id)
 
     storage = get_messages(request)

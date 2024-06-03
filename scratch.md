@@ -35,8 +35,11 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 ==========================================================
 today:
 
-1. albums are being added globally, be sure to add it only to the current profile_id for the page
-2. ability to remove albums with trash can
+1. albums are being added globally, be sure to add it only to the current profile_id for the page x
+2. ability to remove albums with trash can - removes 
+3. add remove button to individual images
+4. mobile view for photos page
+5. when you click the image on the photo page it goes to the photo detail page
 
 
 

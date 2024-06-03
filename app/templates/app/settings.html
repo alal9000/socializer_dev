@@ -41,7 +41,7 @@
         <h5 class="card-title">Profile Details</h5>
         <form method="POST" action="" class="mt-2 d-flex align-items-center">
           {% csrf_token %}
-          <p class="m-0 me-2">Show / Hide Friend Count</p>
+          <p class="m-0 me-2">Show / Hide Friend Count:</p>
           <button type="submit" class="btn btn-primary">
             {% if profile.friend_visibility %}
             <input type="hidden" name="friend_visibility" value="hide">
@@ -55,7 +55,7 @@
         <form id="delete-account-form" method="POST" action="{% url 'delete_account' %}" enctype="multipart/form-data"
           class="mt-2 d-flex align-items-center">
           {% csrf_token %}
-          <p class="m-0 me-2">Delete Your Account Permanently</p>
+          <p class="m-0 me-2">Delete Your Account Permanently:</p>
           <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
             Delete Account
           </button>
