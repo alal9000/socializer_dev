@@ -9,15 +9,15 @@ from app.decorators import check_profile_id
 def gallery(request, profile_id):
     profile = get_object_or_404(Profile, id=profile_id)
 
-    category = request.GET.get("category")
-    if category == None:
+    album = request.GET.get("album")
+    if album == None:
         photos = Photo.objects.filter(profile=profile)
     else:
-        photos = Photo.objects.filter(profile=profile, category__name=category)
+        photos = Photo.objects.filter(profile=profile, album__name=album)
 
-    categories = Album.objects.all()
+    albums = Album.objects.filter(profile=profile)
 
-    context = {"categories": categories, "photos": photos, "profile": profile}
+    context = {"albums": albums, "photos": photos, "profile": profile}
 
     return render(request, "photos/gallery.html", context)
 
@@ -35,24 +35,24 @@ def viewPhoto(request, profile_id, photo_id):
 @check_profile_id
 def addPhoto(request, profile_id):
     profile = get_object_or_404(Profile, id=profile_id)
-    categories = Album.objects.all()
+    albums = Album.objects.filter(profile=profile)
 
     if request.method == "POST":
         data = request.POST
         images = request.FILES.getlist("images")
 
-        if data["category"] != "none":
-            category = Album.objects.get(id=data["category"])
-        elif data["category_new"] != "":
-            category, created = Album.objects.get_or_create(
-                name=data["category_new"]
+        if data["album"] != "none":
+            album = Album.objects.get(id=data["album"])
+        elif data["album_new"] != "":
+            album, created = Album.objects.get_or_create(
+                name=data["album_new"], profile=profile
             )
         else:
-            category = None
+            album = None
 
         for image in images:
             Photo.objects.create(
-            category=category,
+            album=album,
             description=data["description"],
             image=image,
             profile=profile,
@@ -60,7 +60,7 @@ def addPhoto(request, profile_id):
 
         return redirect("gallery", profile_id=profile_id)
 
-    context = {"categories": categories, "profile": profile}
+    context = {"albums": albums, "profile": profile}
 
     return render(request, "photos/add_photos.html", context)
 
@@ -76,12 +76,11 @@ def addAlbum(request, profile_id):
         print("Here is the data dict: ", data)
 
         if data["album"] != "":
-            Album.objects.create(name=data["album"])
+            Album.objects.create(name=data["album"], profile=profile)
             return redirect('gallery', profile_id=profile_id)
 
     context = {
         "profile": profile
     }
-
 
     return render(request, "photos/add_album.html", context)

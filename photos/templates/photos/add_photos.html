@@ -14,17 +14,17 @@
                 <input required name="description" class="form-control" type="text" placeholder="Enter a description">
               </div>
               <div class="mb-3 m-3">
-                <label class="form-label">Select a category</label>
-                <select class="form-select" name="category">
-                  <option value="none">Select a category...</option>
-                  {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
+                <label class="form-label">Select a album <em>(or create below)</em></label>
+                <select class="form-select" name="album">
+                  <option value="none">Select a album...</option>
+                  {% for album in albums %}
+                    <option value="{{ album.id }}">{{ album.name }}</option>
                   {% endfor %}
                 </select>
               </div>
               <div class="mb-3 m-3">
-                <label class="form-label">Create a new category</label>
-                <input name="category_new" class="form-control" type="text" placeholder="Create a new category">
+                <label class="form-label">Create a new album</label>
+                <input name="album_new" class="form-control" type="text" placeholder="Create a new album">
               </div>
               <div class="mb-3 m-3">
                 <label class="form-label">Upload Image</label>

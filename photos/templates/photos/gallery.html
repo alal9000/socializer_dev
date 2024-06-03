@@ -16,8 +16,8 @@
             <ul class="list-group list-group-flush">
               <li class="list-group-item"><a href="{% url 'gallery' profile.id %}">All</a></li>
 
-              {% for category in categories %}
-                <li class="list-group-item"><a href="{% url 'gallery' profile.id %}?category={{category.name}}">{{ category.name }}</a></li>
+              {% for album in albums %}
+                <li class="list-group-item"><a href="{% url 'gallery' profile.id %}?album={{album.name}}">{{ album.name }}</a></li>
               {% endfor %}
 
               {% if request.user.profile.id == profile.id %}
@@ -35,7 +35,7 @@
                 <img src="{{ photo.image.url }}" class="img-thumbnail" alt="..." />
                 <div class="card-body">
                   <small class="card-text">
-                    Category: {{ photo.category.name }}
+                    Album: {% if photo.album.name %} {{ photo.album.name }} {% else %} <p class="d-inline">All</p> {% endif %}
                   </small>
                 </div>
                 <a href="{% url 'photo' profile.id photo.id %}" class="btn btn-outline-dark btn-sm m-1">View</a>

@@ -28,6 +28,18 @@ def direct_messages(request, profile_id):
         id__in=latest_messages.values_list("sender", flat=True)
     )
 
+    if request.method == 'POST':
+        data = request.POST
+        print("The data is: ", data)
+        message_id = data['message_id']
+
+        message = Message.objects.get(id=message_id)
+        message.delete()
+        messages.success(request, "Message deleted successfully.")
+
+        return redirect('messages', profile_id=profile_id)
+
+
     context = {
         "senders": senders,
         "receiver": receiver_profile,

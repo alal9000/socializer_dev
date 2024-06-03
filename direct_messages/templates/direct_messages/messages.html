@@ -45,6 +45,16 @@
 <!-- Main section -->
 <section>
   <div class="container">
+    {% if messages %}
+    <div>
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
     <div class="row">
       <div class="col">
         <!-- Page header -->
@@ -70,6 +80,11 @@
                   <p class="ps-1">{{ message.message }}</p>
                   {% endif %}
                   <span class="time">{{ message.timestamp }}</span>
+                  <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="message_id" value="{{message.id}}">
+                    <button type="submit" class="bi bi-trash delete-btn"></button>
+                  </form>
                 </div>
               </a>
               {% endfor %}

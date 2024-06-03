@@ -15,6 +15,9 @@ todo:
 -new signup auth email (last)
 -change email functionality (need to send email validation)
 -edit / save toggle functionality to update the forms on the front end
+-add pagination to friends page
+-make sure messages can be removed in message template
+-outgoing messages should show in the senders messages page
 ==end==
 
 ==testing==
@@ -32,15 +35,8 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 ==========================================================
 today:
 
-1. outgoing messages should show in the senders messages page
-2. make sure messages can be removed in message template
-3. make sure when names are entered in the signup form , we save it in the db as capitalized x
-4. show / hide friend count
-5. add styles to sign out page
-6. add blank page to friend_requests x
-7. show default message if friends are 0 x
-8. categories are being added globally, be sure to add it only to the current profile_id for the page
-9. add pagination to friends page
+1. albums are being added globally, be sure to add it only to the current profile_id for the page
+2. ability to remove albums with trash can
 
 
 

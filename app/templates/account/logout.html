@@ -22,9 +22,7 @@
             {{ redirect_field }}
         {% endslot %}
         {% slot actions %}
-            {% element button type="submit" %}
-                {% trans 'Sign Out' %}
-            {% endelement %}
+            <button class="btn btn-primary" type="submit">Sign Out</button>
         {% endslot %}
     {% endelement %}
 

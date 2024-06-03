@@ -2,7 +2,7 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-4">
-          <a class="btn btn-dark my-3" href="{% url 'profile' profile.id %}">Go Back</a>
+          <a class="btn btn-dark my-3" href="{% url 'gallery' profile.id %}">Go Back</a>
           <div class="card">
             <form method="POST" action="">
               {% csrf_token %}
