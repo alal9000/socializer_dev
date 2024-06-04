@@ -14,8 +14,12 @@
     margin: 0;
     color: grey;
   }
+
+  .viewport-height {
+    height: 70vh;
+  }
 </style>
-<div class="container mt-2">
+<div class="container mt-2 viewport-height">
   <!-- messages -->
   {% if messages %}
   <div>
@@ -37,11 +41,11 @@
       <div class="card">
         <div class="card-header">Albums:</div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item"><a href="{% url 'gallery' profile.id %}">All</a></li>
+          <li class="list-group-item"><a href="{% url 'gallery' profile.id %}" class="text-decoration-none">All</a></li>
 
           {% for album in albums %}
           <li class="list-group-item d-flex justify-content-between">
-            <a href="{% url 'gallery' profile.id %}?album={{album.name}}">{{ album.name }}</a>
+            <a href="{% url 'gallery' profile.id %}?album={{album.name}}" class="text-decoration-none">{{ album.name }}</a>
 
             <!-- delete album form -->
             <form method="POST" action="" id="delete-album-form-{{ album.id }}">
@@ -108,7 +112,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        Are you sure you want to delete this album? This will also delete all the associated photos
+        Are you sure you want to delete this album?
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" id="delete-album-btn">Delete Album</button>

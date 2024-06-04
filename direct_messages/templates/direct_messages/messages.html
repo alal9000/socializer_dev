@@ -70,7 +70,7 @@
           <div id="chat-area-messages">
             <ul class="p-0">
               {% for message in latest_messages %}
-              <a href="{% url 'conversation' message.sender.id receiver.id %}" class="message-link">
+              <a href="{% url 'conversation' message.sender.id receiver.id %}" class="message-link tex">
                 <div class="container-chat">
                   <img src="{{message.sender.profile_pic.url}}" alt="Avatar" />
                   <p class="username">{{message.sender.user.first_name}}</p>
