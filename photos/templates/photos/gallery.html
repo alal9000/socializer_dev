@@ -16,19 +16,24 @@
   }
 </style>
 <div class="container mt-2">
+  <!-- messages -->
   {% if messages %}
-    <div>
-      {% for message in messages %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      {% endfor %}
+  <div>
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+  <!-- end messages -->
+
   <h1 class="mb-4">{{ profile.user.first_name }}'s Photo Gallery</h1>
   <div class="row">
-    <div class="col-md-3">
+
+    <!-- album column -->
+    <div class="col-md-3 mb-3">
       <div class="card">
         <div class="card-header">Albums:</div>
         <ul class="list-group list-group-flush">
@@ -37,11 +42,15 @@
           {% for album in albums %}
           <li class="list-group-item d-flex justify-content-between">
             <a href="{% url 'gallery' profile.id %}?album={{album.name}}">{{ album.name }}</a>
-            <form method="POST" action="">
+
+            <!-- delete album form -->
+            <form method="POST" action="" id="delete-album-form-{{ album.id }}">
               {% csrf_token %}
               <input type="hidden" name="album_id" value="{{album.id}}">
-              <button type="button" class="bi bi-trash delete-btn" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"></button>
+              <button type="button" class="bi bi-trash delete-btn" data-bs-toggle="modal"
+                data-bs-target="#confirmDeleteModal"></button>
             </form>
+            <!-- end form -->
           </li>
           {% endfor %}
 
@@ -52,10 +61,13 @@
         </ul>
       </div>
     </div>
-    <div class="col-md-9">
+    <!-- end album column -->
+
+    <!-- photo column -->
+    <div class="col-md-9 mb-3">
       <div class="row">
         {% for photo in photos %}
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
           <div class="card">
             <img src="{{ photo.image.url }}" class="img-thumbnail" alt="..." />
             <div class="card-body">
@@ -64,18 +76,25 @@
                 {% endif %}
               </small>
             </div>
-            <div class="d-flex">
-              <a href="{% url 'photo' profile.id photo.id %}" class="btn btn-primary btn-sm m-1 w-75">View</a>
-              <a href="{% url 'photo' profile.id photo.id %}" class="btn btn-outline-dark btn-sm m-1 w-25"><button type="button" class="bi bi-trash delete-btn" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"></button></a>
+            <div class="d-flex justify-content-between">
+              <a href="{% url 'photo' profile.id photo.id %}" class="btn btn-primary btn-sm m-1 w-100">View</a>
+              <form method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" name="photo_id" value="{{photo.id}}">
+                <button type="submit" class="btn btn-outline-dark btn-sm m-1 delete-btn me-2"><i
+                    class="bi bi-trash"></i></button>
+              </form>
             </div>
           </div>
         </div>
         {% empty %}
         <h3>No photos...</h3>
         {% endfor %}
-
       </div>
     </div>
+    <!-- end photo column -->
+
+
   </div>
 </div>
 
@@ -92,11 +111,30 @@
         Are you sure you want to delete this album? This will also delete all the associated photos
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" id="delete-account-btn">Delete Album</button>
+        <button type="button" class="btn btn-danger" id="delete-album-btn">Delete Album</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(function(button) {
+      button.addEventListener('click', function() {
+        var albumId = button.closest('form').getAttribute('id').split('-').pop();
+        var confirmDeleteButton = document.getElementById('delete-album-btn');
+
+        confirmDeleteButton.setAttribute('data-album-id', albumId);
+      });
+    });
+
+    document.getElementById('delete-album-btn').addEventListener('click', function() {
+      var albumId = this.getAttribute('data-album-id');
+      document.getElementById('delete-album-form-' + albumId).submit();
+    });
+  });
+</script>
 {% endblock %}

@@ -36,14 +36,13 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 ==========================================================
 today:
 
-1. non logged in users should be able to browse an event x
-2. ability to remove albums with trash can - removes 
-3. add remove button to individual images
-4. mobile view for photos page
-5. profile_id is set as url parameter x
-6. google social button is styled and google login is working x
-7. make sure get_object_or_404 is implemented accross apps x
-8. remove hi on HP for non-logged in users x
+1. pagination for photos gallery page
+2. pagination for albums gallery page
+3. set vh for footer on gallery, photo and album pages
+4. ability to remove conversation from messages page
+5. show a max of 4 attending and 4 hosting events on the profile page
+6.
+
 9. testing
 
 

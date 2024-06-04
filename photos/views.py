@@ -19,16 +19,27 @@ def gallery(request, profile_id):
     albums = Album.objects.filter(profile=profile)
 
     if request.method == 'POST':
-        # get POST data dict
         data = request.POST
-        # extract data from form submission
-        album_id = data['album_id']
-        # retrieve associated album object associated with the form submission and remove it
-        album = Album.objects.get(id=album_id)
-        album.delete()
+        if "album_id" in data:
+            # get POST data dict
+            # extract data from form submission
+            album_id = data['album_id']
+            # retrieve associated album object associated with the form submission and remove it
+            album = Album.objects.get(id=album_id)
+            album.delete()
 
-        messages.success(request, "Album removed successfully")
-        return redirect('gallery', profile_id=profile_id)
+            messages.success(request, "Album removed successfully")
+            return redirect('gallery', profile_id=profile_id)
+
+        else:
+            photo_id = data['photo_id']
+            photo = Photo.objects.get(id=photo_id)
+            photo.delete()
+
+            messages.success(request, "Photo removed successfully")
+            return redirect('gallery', profile_id=profile_id)
+
+        
 
 
     context = {"albums": albums, "photos": photos, "profile": profile}
@@ -91,6 +102,8 @@ def addAlbum(request, profile_id):
 
         if data["album"] != "":
             Album.objects.create(name=data["album"], profile=profile)
+
+            messages.success(request, "Album added successfully")
             return redirect('gallery', profile_id=profile_id)
 
     context = {

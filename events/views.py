@@ -59,10 +59,10 @@ def event(request, event_id):
                     Notification.objects.create(
                             user=attendee,
                             message=f'{request_profile} commented in {event.event_title}',
-                            link=reverse('event', kwargs={'pk': event.pk})
+                            link=reverse('event', kwargs={'event_id': event.pk})
                         )
 
-            return redirect('event', pk=event_id)
+            return redirect('event', event_id=event_id)
 
         # join event
         if request.user.is_authenticated and not is_host:
@@ -71,10 +71,10 @@ def event(request, event_id):
             Notification.objects.create(
                 user=event.host,
                 message=f'{request.user.first_name} just joined your event',
-                link=reverse('event', kwargs={'pk': event.pk})
+                link=reverse('event', kwargs={'event_id': event.pk})
                 )
 
-            return redirect('event', pk=event_id)  
+            return redirect('event', event_id=event_id)  
 
     
     comments = Comment.objects.filter(event=event)
