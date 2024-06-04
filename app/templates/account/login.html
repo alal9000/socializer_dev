@@ -7,6 +7,18 @@
 {% endblock head_title %}
 
 {% block content %}
+
+<style>
+    .google-button {
+        background-color: #dc4a38;
+        color: #ffffff;
+        text-shadow: none;
+        background-image: none;
+        -webkit-box-shadow: 0px 0em 0px 0px rgba(34, 36, 38, 0.15) inset;
+        box-shadow: 0px 0em 0px 0px rgba(34, 36, 38, 0.15) inset;
+        border: none;
+    }
+</style>
 <section>
     <div class="container">
         <div class="row">
@@ -14,14 +26,15 @@
                 <h1>Login</h1>
                 {% if not SOCIALACCOUNT_ONLY %}
                 {% setvar link %}
-            <a href="{{ signup_url }}">
-            {% endsetvar %}
-            {% setvar end_link %}
-            </a>
-        {% endsetvar %}
-        <p>
-            {% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }}.{% endblocktranslate %}
-        </p>
+                <a href="{{ signup_url }}">
+                    {% endsetvar %}
+                    {% setvar end_link %}
+                </a>
+                {% endsetvar %}
+                <p>
+                    {% blocktranslate %}If you have not created an account yet, then please {{ link }}sign
+                    up{{ end_link }}.{% endblocktranslate %}
+                </p>
                 {% url 'account_login' as action_url %}
                 <form method="post" action="{{ action_url }}">
                     {% csrf_token %}
@@ -40,9 +53,14 @@
                     {{ redirect_field }}
                 </form>
                 {% endif %}
-                {% if SOCIALACCOUNT_ENABLED %}
-                {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-                {% endif %}
+                <div class="text-center mt-4 mb-4">
+                    <hr>
+                    <p>OR:</p>
+                    <a href="http://127.0.0.1:8000/accounts/google/login/?process=login" type="button"
+                        class="btn btn-dark btn-floating mx-1 google-button">
+                        <i class="fab fa-google"></i>Login with Google
+                    </a>
+                </div>
             </div>
         </div>
     </div>
