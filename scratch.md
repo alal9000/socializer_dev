@@ -36,12 +36,14 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 ==========================================================
 today:
 
-1. pagination for photos gallery page
+1. pagination for photos gallery page x
 2. pagination for albums gallery page
 3. pagination for friends page, sorted in alphabetical order
 4. set vh for footer on gallery, photo and album pages x
 5. ability to remove conversation from messages page (may need to redesign db w conversations class - method retuns sender / receiver messages)
 6. make you need to be friends to DM
+7. check homely and ex for anthony
+ image container overfllow x
 
 
 9. testing

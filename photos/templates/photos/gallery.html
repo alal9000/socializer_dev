@@ -16,7 +16,7 @@
   }
 
   .viewport-height {
-    height: 70vh;
+    min-height: 70vh;
   }
 </style>
 <div class="container mt-2 viewport-height">
@@ -45,7 +45,8 @@
 
           {% for album in albums %}
           <li class="list-group-item d-flex justify-content-between">
-            <a href="{% url 'gallery' profile.id %}?album={{album.name}}" class="text-decoration-none">{{ album.name }}</a>
+            <a href="{% url 'gallery' profile.id %}?album={{album.name}}"
+              class="text-decoration-none">{{ album.name }}</a>
 
             <!-- delete album form -->
             <form method="POST" action="" id="delete-album-form-{{ album.id }}">
@@ -95,8 +96,42 @@
         <h3>No photos...</h3>
         {% endfor %}
       </div>
+
+      <!-- pagination -->
+      <div class="d-flex justify-content-center">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            {% if photos.has_previous %}
+            <li class="page-item">
+              <a class="page-link"
+                href="?page={{ photos.previous_page_number }}{% if album %}&album={{ album }}{% endif %}"
+                aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            {% endif %}
+            {% for num in photos.paginator.page_range %}
+            {% if photos.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > photos.number|add:-3 and num < photos.number|add:3 %}
+            <li class="page-item"><a class="page-link"
+                href="?page={{ num }}{% if album %}&album={{ album }}{% endif %}">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if photos.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ photos.next_page_number }}{% if album %}&album={{ album }}{% endif %}"
+                aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+      <!-- end -->
     </div>
-    <!-- end photo column -->
+    <!-- end -->
 
 
   </div>
@@ -126,8 +161,8 @@
   document.addEventListener('DOMContentLoaded', function () {
     var deleteButtons = document.querySelectorAll('.delete-btn');
 
-    deleteButtons.forEach(function(button) {
-      button.addEventListener('click', function() {
+    deleteButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
         var albumId = button.closest('form').getAttribute('id').split('-').pop();
         var confirmDeleteButton = document.getElementById('delete-album-btn');
 
@@ -135,7 +170,7 @@
       });
     });
 
-    document.getElementById('delete-album-btn').addEventListener('click', function() {
+    document.getElementById('delete-album-btn').addEventListener('click', function () {
       var albumId = this.getAttribute('data-album-id');
       document.getElementById('delete-album-form-' + albumId).submit();
     });
