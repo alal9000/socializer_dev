@@ -19,17 +19,27 @@ def gallery(request, profile_id):
 
     albums = Album.objects.filter(profile=profile)
 
-    # Pagination
-    page = request.GET.get('page', 1)
-    paginator = Paginator(photos, 10)
+    # Photos Pagination
+    photo_page = request.GET.get('photo_page', 1)
+    photo_paginator = Paginator(photos, 10)  # 10 photos per page
 
     try:
-        photos = paginator.page(page)
+        photos = photo_paginator.page(photo_page)
     except PageNotAnInteger:
-        photos = paginator.page(1)
+        photos = photo_paginator.page(1)
     except EmptyPage:
-        photos = paginator.page(paginator.num_pages)
-    # end
+        photos = photo_paginator.page(photo_paginator.num_pages)
+
+    # Albums Pagination
+    album_page = request.GET.get('album_page', 1)
+    album_paginator = Paginator(albums, 5)  # 10 albums per page
+
+    try:
+        albums = album_paginator.page(album_page)
+    except PageNotAnInteger:
+        albums = album_paginator.page(1)
+    except EmptyPage:
+        albums = album_paginator.page(album_paginator.num_pages)
 
     if request.method == 'POST':
         data = request.POST
