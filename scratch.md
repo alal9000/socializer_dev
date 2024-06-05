@@ -44,6 +44,7 @@ today:
 6. make you need to be friends to DM x
 7. check homely and ex for anthony
 8. search function for friends page
+9. make sure we are using min-height for the vh div where its needed
 
 
 9. testing

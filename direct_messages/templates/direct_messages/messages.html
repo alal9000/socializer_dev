@@ -40,11 +40,16 @@
     padding-left: 0;
     overflow-y: auto;
   }
+
+  .viewport-height {
+    min-height: 70vh;
+    overflow-y: auto;
+  }
 </style>
 
 <!-- Main section -->
 <section>
-  <div class="container">
+  <div class="container viewport-height">
     {% if messages %}
     <div>
       {% for message in messages %}

@@ -18,7 +18,9 @@ def friends(request, profile_id):
 
     other_friends = [friend.get_other_profile(profile) for friend in friends]
 
-    return render(request, "friends/friends.html", {"friends": other_friends, "profile": profile})
+    return render(
+        request, "friends/friends.html", {"friends": other_friends, "profile": profile}
+    )
 
 
 @login_required

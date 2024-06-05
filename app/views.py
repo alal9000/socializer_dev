@@ -103,11 +103,15 @@ def profile(request, profile_id):
 
     # Check if the page requestor is in the current profile's friend list
     is_friend = False
-    if Friend.objects.filter(sender=current_user_profile, receiver=profile, status="accepted").exists() or \
-            Friend.objects.filter(sender=profile, receiver=current_user_profile, status="accepted").exists():
+    if (
+        Friend.objects.filter(
+            sender=current_user_profile, receiver=profile, status="accepted"
+        ).exists()
+        or Friend.objects.filter(
+            sender=profile, receiver=current_user_profile, status="accepted"
+        ).exists()
+    ):
         is_friend = True
-
-    print(is_friend)
 
     user_photos = Photo.objects.filter(profile=profile).order_by("-timestamp")[:6]
     user_instance = profile.user
@@ -257,7 +261,7 @@ def profile_settings(request, profile_id):
             return redirect("profile_settings", profile_id=profile_id)
 
     if "friend_visibility" in request.POST:
-        if request.POST["friend_visibility"] == 'hide':
+        if request.POST["friend_visibility"] == "hide":
             profile.friend_visibility = False
         else:
             profile.friend_visibility = True
@@ -265,9 +269,6 @@ def profile_settings(request, profile_id):
         profile.save()
         messages.success(request, "Friend count changed successfully.")
         return redirect("profile_settings", profile_id=profile_id)
-
-
-        
 
     context = {
         "profile": profile,
@@ -301,11 +302,11 @@ class CustomSignupView(SignupView):
         return self.default_success_url
 
     def form_valid(self, form):
-        form.cleaned_data['first_name'] = capfirst(form.cleaned_data['first_name'])
-        form.cleaned_data['last_name'] = capfirst(form.cleaned_data['last_name'])
-        
+        form.cleaned_data["first_name"] = capfirst(form.cleaned_data["first_name"])
+        form.cleaned_data["last_name"] = capfirst(form.cleaned_data["last_name"])
+
         response = super().form_valid(form)
-        
+
         first_name = form.cleaned_data.get("first_name")
         messages.success(
             self.request,
@@ -325,9 +326,9 @@ class CustomLoginView(LoginView):
     def form_valid(self, form):
         response = super().form_valid(form)
         first_name = self.request.user.first_name
- 
+
         messages.success(
             self.request, f"Welcome, {first_name}! You have successfully logged in."
         )
-        
+
         return response
