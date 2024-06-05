@@ -100,10 +100,13 @@
 						{% endif %}
 						{% endif %}
 					</form>
-
 					<!-- message button -->
 					{% if request.user.profile != profile %}
-					<a class="btn btn-warning mt-2" href="#" data-bs-toggle="modal" data-bs-target="#reg-modal">Message</a>
+						{% if is_friend %}
+							<a class="btn btn-warning mt-2" href="#" data-bs-toggle="modal" data-bs-target="#reg-modal">Message</a>
+						{% else %}
+							<a class="btn btn-warning mt-2" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Message</a>
+						{% endif %}
 					{% else %}
 					<!-- user settings link -->
 				<a href="{% url 'profile_settings' profile.id %}" class="btn btn-warning w-100 mt-2">User settings</a>
@@ -257,7 +260,7 @@
 							<label for="message-text" class="col-form-label">Message:</label>
 							<textarea class="form-control" id="message-text" name="message" required></textarea>
 						</div>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button type="submit" class="btn btn-primary mt-2">Submit</button>
 					</form>
 				</div>
 			</div>
@@ -270,15 +273,14 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Only Friends Can Message</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+        Please send a friend request to {{ profile.user.first_name }}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>

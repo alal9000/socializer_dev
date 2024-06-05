@@ -100,6 +100,15 @@ def contact(request):
 def profile(request, profile_id):
     profile = get_object_or_404(Profile, id=profile_id)
     current_user_profile = request.user.profile
+
+    # Check if the page requestor is in the current profile's friend list
+    is_friend = False
+    if Friend.objects.filter(sender=current_user_profile, receiver=profile, status="accepted").exists() or \
+            Friend.objects.filter(sender=profile, receiver=current_user_profile, status="accepted").exists():
+        is_friend = True
+
+    print(is_friend)
+
     user_photos = Photo.objects.filter(profile=profile).order_by("-timestamp")[:6]
     user_instance = profile.user
     friend_visibility = profile.friend_visibility
@@ -216,6 +225,7 @@ def profile(request, profile_id):
             success_message = message
 
     context = {
+        "is_friend": is_friend,
         "profile_form": profile_form,
         "user_form": user_form,
         "user_photos": user_photos,
