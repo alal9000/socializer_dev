@@ -102,7 +102,7 @@
         {% for photo in photos %}
         <div class="col-md-4 mb-3">
           <div class="card">
-            <img src="{{ photo.image.url }}" class="img-thumbnail" alt="..." />
+            <a href="{% url 'photo' profile.id photo.id %}"><img src="{{ photo.image.url }}" class="img-thumbnail" alt="..." /></a>
             <div class="card-body">
               <small class="card-text">
                 Album: {% if photo.album.name %} {{ photo.album.name }} {% else %} <p class="d-inline">All</p>

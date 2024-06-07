@@ -41,9 +41,6 @@ today:
 
 . ability to remove conversation from messages page (may need to redesign db w conversations class - method retuns sender / receiver messages)
 
-. clicking on image goes to the image detail page
-. search function for friends page x
-. search functions for messages page x
 
 
 
