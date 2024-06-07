@@ -65,7 +65,7 @@
         <!-- Page header -->
         <section>
           <h1>Messages</h1>
-          <h3>Search conversation</h3>
+          <h3>Search conversations</h3>
           <input type="text" id="search-input" class="form-control w-50 p-2 rounded border border-grey mb-2"
             placeholder="Name..." />
         </section>
@@ -73,27 +73,15 @@
         <!-- Chat area -->
         <section>
           <div id="chat-area-messages">
+            <h3>Conversations:</h3>
             <ul class="p-0">
-              {% for message in latest_messages %}
-              <a href="{% url 'conversation' message.sender.id receiver.id %}" class="message-link tex">
-                <div class="container-chat">
-                  <img src="{{message.sender.profile_pic.url}}" alt="Avatar" />
-                  <p class="username">{{message.sender.user.first_name}}</p>
-                  {% if not message.is_read %}
-                  <p class="unread-message ps-1">{{ message.message }}</p>
-                  {% else %}
-                  <p class="ps-1">{{ message.message }}</p>
-                  {% endif %}
-                  <span class="time">{{ message.timestamp }}</span>
-                  <form method="POST" action="">
-                    {% csrf_token %}
-                    <input type="hidden" name="message_id" value="{{message.id}}">
-                    <button type="submit" class="bi bi-trash"></button>
-                  </form>
-                </div>
+              {% for sender in senders %}
+              <a href="{% url 'conversation' sender.id receiver.id %}" class="message-link tex">
+                {{ sender }} <br>
               </a>
+              
               {% endfor %}
-              {% if not latest_messages %}
+              {% if not senders %}
               <div>
                 <h1>No direct messages yet</h1>
               </div>

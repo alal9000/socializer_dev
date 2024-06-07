@@ -6,7 +6,6 @@ class Message(models.Model):
     message = models.TextField()
     sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="messager")
     timestamp = models.DateTimeField()
-    is_read = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.sender} -> {self.receiver}"
+        return f"{self.sender}"

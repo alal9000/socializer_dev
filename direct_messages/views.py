@@ -10,40 +10,34 @@ from app.decorators import check_profile_id
 from app.models import Profile
 from notifications.models import Notification
 
+
 @login_required
 @check_profile_id
 def direct_messages(request, profile_id):
+    current_profile = get_object_or_404(Profile, id=profile_id)
 
-    receiver_profile = get_object_or_404(Profile, id=profile_id)
+    # Get distinct sender IDs
+    sender_ids = Message.objects.filter(receiver=current_profile).values('sender').distinct()
+    
+    # Fetch the Profile objects for these sender IDs
+    senders = Profile.objects.filter(id__in=[sender['sender'] for sender in sender_ids])
 
-    latest_message_ids = (
-        Message.objects.filter(receiver=receiver_profile)
-        .values("sender")
-        .annotate(latest_message_id=Max("id"))
-        .values_list("latest_message_id", flat=True)
-    )
-    latest_messages = Message.objects.filter(id__in=latest_message_ids)
+    print("sender are: ", senders)
 
-    senders = Profile.objects.filter(
-        id__in=latest_messages.values_list("sender", flat=True)
-    )
-
-    if request.method == 'POST':
+    if request.method == "POST":
         data = request.POST
         print("The data is: ", data)
-        message_id = data['message_id']
+        message_id = data["message_id"]
 
         message = Message.objects.get(id=message_id)
         message.delete()
         messages.success(request, "Message deleted successfully.")
 
-        return redirect('messages', profile_id=profile_id)
-
+        return redirect("messages", profile_id=profile_id)
 
     context = {
         "senders": senders,
-        "receiver": receiver_profile,
-        "latest_messages": latest_messages,
+        "receiver": current_profile,
     }
 
     return render(request, "direct_messages/messages.html", context)
@@ -51,6 +45,8 @@ def direct_messages(request, profile_id):
 
 @login_required
 def send_message(request, profile_id):
+    # Messages sent from recipients profile
+    
     receiver_profile = get_object_or_404(Profile, id=profile_id)
     message_text = request.POST.get("message")
     sender_profile = request.user.profile
@@ -65,17 +61,16 @@ def send_message(request, profile_id):
 
         Notification.objects.create(
             user=receiver_profile,
-            message="You have a new message",
-            link=f"/direct_messages/messages/{receiver_profile.id}",
+            message=f"You have a new message from {sender_profile}",
+            link=f"/direct_messages/conversation/{sender_profile.id}/{receiver_profile.id}",
         )
         messages.success(request, "Message sent successfully.")
 
         return redirect("home")
-    
+
     else:
         messages.success(request, "Message did not send successfully.")
         return redirect("home")
-
 
 
 def conversation_view(request, sender_id, receiver_id):
@@ -89,16 +84,13 @@ def conversation_view(request, sender_id, receiver_id):
         messages_sent_by_receiver = Message.objects.filter(
             sender=receiver_profile, receiver=sender_profile
         )
-        conversation_messages = messages_sent_by_sender | messages_sent_by_receiver
-        conversation_messages = conversation_messages.order_by("timestamp")
+        conversation_messages = (
+            messages_sent_by_sender | messages_sent_by_receiver
+        ).order_by("timestamp")
 
-        # Filter unread messages based on the receiver
-        unread_messages = conversation_messages.filter(is_read=False, receiver=receiver_profile)
-        unread_messages.update(is_read=True)  
 
         if request.method == "POST":
             message_text = request.POST.get("message")
-            print(message_text)
 
             if message_text:
                 Message.objects.create(
@@ -110,8 +102,8 @@ def conversation_view(request, sender_id, receiver_id):
 
                 Notification.objects.create(
                     user=sender_profile,
-                    message="You have a new message",
-                    link=f"/direct_messages/messages/{sender_profile.id}",
+                    message=f"You have a new message from {receiver_profile}",
+                    link=f"/direct_messages/conversation/{receiver_profile.id}/{sender_profile.id}",
                 )
 
             return redirect(
