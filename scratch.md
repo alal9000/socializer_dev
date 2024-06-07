@@ -45,7 +45,7 @@ today:
 7. check homely and ex for anthony
 8. search function for friends page
 9. make sure we are using min-height for the vh div where its needed
-10. friend requests do not stack properly
+10. friend requests do not stack properly x
 
 9. testing
 

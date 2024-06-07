@@ -12,12 +12,11 @@
   padding: 10px;
 }
 
-.chat-container img {
-  float: left;
-  max-width: 60px;
-  width: 100%;
-  margin-right: 20px;
-  border-radius: 50%;
+.avatar {
+  width: 50px;
+  border-radius: 100%;
+  margin-right: 5px;
+  object-fit: cover;
 }
 
 .chat-container {
@@ -31,6 +30,7 @@
 .time-right {
   color: grey;
   font-style: italic;
+  font-size: small;
 
 }
 </style>
@@ -49,7 +49,7 @@
               {% for message in messages %}
               <li>
                 <div class="chat-container">
-                  <a href="{% url 'profile' message.sender.id %}"><img src="{{ message.sender.profile_pic.url }}" alt="Avatar"></a>
+                  <a href="{% url 'profile' message.sender.id %}"><img class="avatar" src="{{ message.sender.profile_pic.url }}" alt="Avatar"></a>
                   <p><b>{{message.sender.user.first_name}}: </b>{{ message.message }}</p>
                   <span class="time-right">{{ message.timestamp }}</span>
                 </div>

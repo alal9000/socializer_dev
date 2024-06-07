@@ -22,19 +22,6 @@ def direct_messages(request, profile_id):
     # Fetch the Profile objects for these sender IDs
     senders = Profile.objects.filter(id__in=[sender['sender'] for sender in sender_ids])
 
-    print("sender are: ", senders)
-
-    if request.method == "POST":
-        data = request.POST
-        print("The data is: ", data)
-        message_id = data["message_id"]
-
-        message = Message.objects.get(id=message_id)
-        message.delete()
-        messages.success(request, "Message deleted successfully.")
-
-        return redirect("messages", profile_id=profile_id)
-
     context = {
         "senders": senders,
         "receiver": current_profile,
@@ -46,10 +33,10 @@ def direct_messages(request, profile_id):
 @login_required
 def send_message(request, profile_id):
     # Messages sent from recipients profile
-    
+
     receiver_profile = get_object_or_404(Profile, id=profile_id)
-    message_text = request.POST.get("message")
     sender_profile = request.user.profile
+    message_text = request.POST.get("message")
 
     if message_text:
         Message.objects.create(
@@ -74,6 +61,7 @@ def send_message(request, profile_id):
 
 
 def conversation_view(request, sender_id, receiver_id):
+    # page requester is the same as current_profile
     if request.user.profile.pk == int(receiver_id):
         sender_profile = get_object_or_404(Profile, id=sender_id)
         receiver_profile = get_object_or_404(Profile, id=receiver_id)
@@ -85,6 +73,7 @@ def conversation_view(request, sender_id, receiver_id):
             sender=receiver_profile, receiver=sender_profile
         )
         conversation_messages = (
+            # combine qsets with django union operator and order by latest message
             messages_sent_by_sender | messages_sent_by_receiver
         ).order_by("timestamp")
 

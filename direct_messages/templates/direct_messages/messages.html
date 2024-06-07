@@ -45,6 +45,20 @@
     min-height: 70vh;
     overflow-y: auto;
   }
+
+  .avatar {
+    width: 50px;
+    border-radius: 100%;
+    margin-right: 5px;
+    object-fit: cover;
+  }
+
+  hr.style-one {
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+  }
 </style>
 
 <!-- Main section -->
@@ -73,11 +87,12 @@
         <!-- Chat area -->
         <section>
           <div id="chat-area-messages">
-            <h3>Conversations:</h3>
+            <h3 class="mb-3">Conversations:</h3>
             <ul class="p-0">
               {% for sender in senders %}
-              <a href="{% url 'conversation' sender.id receiver.id %}" class="message-link tex">
-                {{ sender }} <br>
+              <a href="{% url 'conversation' sender.id receiver.id %}" class="text-decoration-none">
+                <p><img class="avatar" src="{{ sender.profile_pic.url }}" alt="">{{ sender }}</p>
+                <hr class="style-one">
               </a>
               
               {% endfor %}
