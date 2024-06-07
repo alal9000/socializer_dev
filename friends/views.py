@@ -4,6 +4,7 @@ from django.db.models import Q
 
 from app.decorators import check_profile_id
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Friend
 from app.models import Profile
 
@@ -17,6 +18,23 @@ def friends(request, profile_id):
     )
 
     other_friends = [friend.get_other_profile(profile) for friend in friends]
+
+    # Sort the other_friends queryset alphabetically by the first name
+    other_friends = sorted(other_friends, key=lambda x: x.user.first_name)
+
+    print(other_friends)
+
+    # friends Pagination
+    friends_page = request.GET.get('friends_page', 1)
+    friends_paginator = Paginator(other_friends, 20)
+
+    try:
+        other_friends = friends_paginator.page(friends_page)
+    except PageNotAnInteger:
+        other_friends = friends_paginator.page(1)
+    except EmptyPage:
+        other_friends = friends_paginator.page(friends_paginator.num_pages)
+    # end pagination
 
     return render(
         request, "friends/friends.html", {"friends": other_friends, "profile": profile}

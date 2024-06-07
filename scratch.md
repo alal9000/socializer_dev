@@ -37,7 +37,7 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 today:
 
 
-. pagination for friends page, sorted in alphabetical order
+. pagination for friends page
 
 . ability to remove conversation from messages page (may need to redesign db w conversations class - method retuns sender / receiver messages)
 
