@@ -37,18 +37,18 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 today:
 
 
-3. pagination for friends page, sorted in alphabetical order
+. pagination for friends page, sorted in alphabetical order
 
-5. ability to remove conversation from messages page (may need to redesign db w conversations class - method retuns sender / receiver messages)
-7. check homely and ex for anthony
-8. search function for friends page
+. ability to remove conversation from messages page (may need to redesign db w conversations class - method retuns sender / receiver messages)
 
-9. testing
-
-
+. clicking on image goes to the image detail page
+. search function for friends page x
+. search functions for messages page x
 
 
-. create 10 fake users A - I, then do vigourous testing
+
+
+. testing -> create 10 fake users A - I, then do vigourous testing
 
 
 

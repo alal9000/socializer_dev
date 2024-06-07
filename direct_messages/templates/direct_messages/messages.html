@@ -1,39 +1,6 @@
 {% extends "app/main.html" %} {% block content %}
 
 <style>
-  .container-chat {
-    border: 2px solid #dedede;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px auto;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .unread-message {
-    font-weight: bold;
-  }
-
-  .time {
-    float: left;
-    color: #aaa;
-  }
-
-  .username {
-    color: #aaa;
-    float: left;
-    margin-left: 5px;
-  }
-
-  .container-chat img {
-    float: left;
-    max-width: 60px;
-    width: 100%;
-    margin-right: 20px;
-    border-radius: 50%;
-  }
-
   .chat-area-messages {
     flex: 1;
     box-sizing: border-box;
@@ -90,11 +57,11 @@
             <h3 class="mb-3">Conversations:</h3>
             <ul class="p-0">
               {% for sender in senders %}
-              <a href="{% url 'conversation' sender.id receiver.id %}" class="text-decoration-none">
-                <p><img class="avatar" src="{{ sender.profile_pic.url }}" alt="">{{ sender }}</p>
+              <a href="{% url 'conversation' sender.id receiver.id %}" class="text-decoration-none message-link">
+                <p class="username"><img class="avatar" src="{{ sender.profile_pic.url }}" alt="">{{ sender }}</p>
                 <hr class="style-one">
               </a>
-              
+
               {% endfor %}
               {% if not senders %}
               <div>
