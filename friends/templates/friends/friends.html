@@ -40,12 +40,26 @@
         <ul class="list-unstyled">
           {% if friends %}
           {% for friend in friends %}
-          <li class="mb-3"><a class="text-decoration-none friend-link" href="{% url 'profile' friend.id %}"><img class="avatar"
-                src="{{ friend.profile_pic.url }}" alt=""><p class="username">{{ friend.user.first_name }}</p><hr class="style-one"></a>
-            
+          <li class="mb-3"><a class="text-decoration-none friend-link" href="{% url 'profile' friend.id %}"><img
+                class="avatar" src="{{ friend.profile_pic.url }}" alt="">
+              <p class="username">{{ friend.user.first_name }}</p>
+              <hr class="style-one">
+            </a>
           </li>
 
           {% endfor %}
+
+          <!-- Pagination links -->
+          {% if friends.has_previous %}
+          <a href="?page={{ friends.previous_page_number }}">Previous</a>
+          {% endif %}
+
+          Page {{ friends.page_number }} of {{ friends.paginator.num_pages }}
+
+          {% if friends.has_next %}
+          <a href="?page={{ friends.next_page_number }}">Next</a>
+          {% endif %}
+          <!-- End pagination -->
 
           {% else %}
           <p><em>No friends showing</em></p>
