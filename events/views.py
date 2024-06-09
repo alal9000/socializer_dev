@@ -66,7 +66,7 @@ def event(request, event_id):
                     Notification.objects.create(
                         user=attendee,
                         message=f'The event "{event_title}" has been cancelled.',
-                        link=redirect('home')
+                        link=reverse('event', kwargs={'event_id': event.id})
                     )
                 messages.success(request, 'Event cancelled successfully.')
                 return redirect('home')
