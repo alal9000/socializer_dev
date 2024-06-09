@@ -43,6 +43,7 @@ def home(request):
                 F("num_guests") + Value(1), Value(0)
             ),  # add 1 for the host
         )
+        .filter(cancelled=False)
         .filter(
             Q(event_date__gt=current_datetime.date())
             | Q(

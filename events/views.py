@@ -36,6 +36,10 @@ def create(request):
 def event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
 
+    # Check if the event is canceled
+    if event.cancelled:
+        return render(request, 'events/event_cancelled.html')
+
     request_profile = None
     if request.user.is_authenticated:
         request_profile = request.user.profile
@@ -47,6 +51,26 @@ def event(request, event_id):
     total_current_attendees = event.guests.count() + 1
 
     if request.method == 'POST':
+        data = request.POST
+        # cancel event
+        if 'host-cancel' in data:
+            if is_host:
+                event.cancelled = True
+                event.save()
+
+                attendees = [event.host] + list(event.guests.all())
+                event_title = event.event_title
+
+                # Notify all attendees
+                for attendee in attendees:
+                    Notification.objects.create(
+                        user=attendee,
+                        message=f'The event "{event_title}" has been cancelled.',
+                        link=redirect('home')
+                    )
+                messages.success(request, 'Event cancelled successfully.')
+                return redirect('home')
+
         # comment
         if is_guest or is_host:
             comment_text = request.POST.get('comment_text')
@@ -76,7 +100,6 @@ def event(request, event_id):
 
             return redirect('event', event_id=event_id)  
 
-    
     comments = Comment.objects.filter(event=event)
 
     context = {

@@ -14,6 +14,7 @@ class Event(models.Model):
   host = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
   date_created = models.DateTimeField(auto_now_add=True, blank=True)
   guests = models.ManyToManyField(Profile, related_name='attended_events', blank=True)
+  cancelled = models.BooleanField(default=False)
 
   def __str__(self):
       return self.event_title
