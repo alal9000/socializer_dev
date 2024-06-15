@@ -1,0 +1,64 @@
+{% extends "app/main.html" %} {% load static %}
+
+{% block content %}
+
+<style>
+  .avatar {
+    width: 50px;
+    border-radius: 100%;
+    margin-right: 5px;
+    object-fit: cover;
+  }
+
+  hr.style-one {
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+  }
+
+  .viewport-height {
+    min-height: 70vh;
+    overflow-y: auto;
+  }
+</style>
+
+<section>
+  <div class="container viewport-height">
+    <div class="row">
+      <h1>My Join Requests as Host</h1>
+
+      <ul class="list-unstyled">
+        {% for request in host_requests %}
+        <li>
+          <strong><a class="text-decoration-none"
+              href="{% url 'event' request.event.id %}">{{ request.event }}:</a></strong><a class="text-decoration-none"
+            href="{% url 'profile' request.sender.id %}"><img class="avatar" src="{{ request.sender.profile_pic.url}}"
+              alt=""> {{ request.sender.user.first_name }}</a>
+          <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="event_id" value="{{ request.event.id }}">
+            <input type="hidden" name="sender_id" value="{{ request.sender.id }}">
+            <button class="btn btn-primary" type="submit" name="action" value="approve">Approve</button>
+            <button class="btn btn-danger" type="submit" name="action" value="deny">Deny</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+
+      <h1>My Join Requests as Attendee</h1>
+
+      <ul class="list-unstyled">
+        {% for request in attendee_requests %}
+        <li>
+          <a class="text-decoration-none" href="{% url 'event' request.event.id %}">{{ request.event }} </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+
+{% endblock %}

@@ -2,7 +2,6 @@ from django.db import models
 from app.models import Profile
 
 class Event(models.Model):
-
   event_title = models.CharField(max_length=300)
   total_attendees = models.IntegerField(null=True, blank=True)
   location = models.CharField(max_length=300, null=True, blank=True)
@@ -27,3 +26,13 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.comment}"
+
+
+class EventRequest(models.Model):
+    host = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="event_request_host")
+    sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="event_requests_sent")
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="event_requests")
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('denied', 'Denied')], default='pending')
+
+    def __str__(self):
+        return f"{self.sender} -> {self.event} ({self.status})"
