@@ -54,9 +54,7 @@ def event(request, event_id):
     if EventRequest.objects.filter(
         sender=request_profile, host=event.host, event=event
     ).exists():
-        button = EventRequest.objects.get(
-            sender=request_profile, host=event.host, event=event
-        ).status
+        button = EventRequest.objects.filter(event_id=event.id).last().status
     print(button)
 
     if request.method == "POST":
@@ -108,7 +106,7 @@ def event(request, event_id):
             Notification.objects.create(
                 user=event.host,
                 message=f"{request.user.first_name} has requested to join your event",
-                link=reverse("event_requests", kwargs={"profile_id": event.host.id })
+                link=reverse("event_requests", kwargs={"profile_id": event.host.id}),
             )
 
             messages.success(request, "Your request to join the event has been sent.")
@@ -148,9 +146,8 @@ def remove_attendee(request, event_id):
 @login_required
 def event_requests(request, profile_id):
     profile = get_object_or_404(Profile, id=profile_id)
-    host_requests = EventRequest.objects.filter(host=profile, status='pending')
-    attendee_requests = EventRequest.objects.filter(sender=profile, status='pending')
-    
+    host_requests = EventRequest.objects.filter(host=profile, status="pending")
+    attendee_requests = EventRequest.objects.filter(sender=profile, status="pending")
 
     if request.method == "POST":
         # extract data from the form submission
@@ -160,7 +157,9 @@ def event_requests(request, profile_id):
 
         # Fetch the Event and EventRequest instance
         event = get_object_or_404(Event, id=event_id)
-        event_request = get_object_or_404(EventRequest, host=profile, sender=sender_id, event=event)
+        event_request = EventRequest.objects.filter(
+            host=profile, sender=sender_id, event=event
+        ).last()
 
         if action == "approve":
             event_request.status = "accepted"
@@ -188,9 +187,8 @@ def event_requests(request, profile_id):
         return redirect("event", event_id=event.id)
 
     context = {
-        'host_requests': host_requests,
-        'attendee_requests': attendee_requests,
+        "host_requests": host_requests,
+        "attendee_requests": attendee_requests,
     }
 
-    
     return render(request, "events/event_requests.html", context)
