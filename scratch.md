@@ -42,7 +42,7 @@ today: (commit after each)
 
 4. age radios on profile page x
 
-5. profile description data should show for a user whose profile is being browsed (cannot submit the form obviously)
+5. profile description data should show for a user whose profile is being browsed (cannot submit the form obviously) x
 
 6. look at the pagination on the photos page
 

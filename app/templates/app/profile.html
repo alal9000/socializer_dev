@@ -58,8 +58,8 @@
 	}
 
 	.placeholder-italic::placeholder {
-    font-style: italic;
-}
+		font-style: italic;
+	}
 </style>
 
 <section>
@@ -102,14 +102,14 @@
 					</form>
 					<!-- message button -->
 					{% if request.user.profile != profile %}
-						{% if is_friend %}
-							<a class="btn btn-warning mt-2" href="#" data-bs-toggle="modal" data-bs-target="#reg-modal">Message</a>
-						{% else %}
-							<a class="btn btn-warning mt-2" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Message</a>
-						{% endif %}
+					{% if is_friend %}
+					<a class="btn btn-warning mt-2" href="#" data-bs-toggle="modal" data-bs-target="#reg-modal">Message</a>
+					{% else %}
+					<a class="btn btn-warning mt-2" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Message</a>
+					{% endif %}
 					{% else %}
 					<!-- user settings link -->
-				<a href="{% url 'profile_settings' profile.id %}" class="btn btn-warning w-100 mt-2">User settings</a>
+					<a href="{% url 'profile_settings' profile.id %}" class="btn btn-warning w-100 mt-2">User settings</a>
 					{% endif %}
 					<hr class="style-one" />
 					<h3 style="text-align: center">
@@ -134,7 +134,7 @@
 
 						<input class="btn btn-primary" type="submit" name="profile-pic" value="update-image">
 					</form>
-					
+
 				</div>
 
 				<!-- profile description -->
@@ -145,8 +145,18 @@
 						<button class="btn btn-primary mt-2" type="submit" name="update-description">Update About</button>
 					</form>
 				</div>
+				{% else %}
+				<!-- display age band and description as plain text -->
+				<div class="card card-body mb-2">
+					{% if profile.description %}
+						<h4>About Me</h4>
+						<p>{{ profile.description }}</p>
+					{% endif %}
+					<h4>Age Band</h4>
+					<p>{{ profile.get_age_band_display }}</p>
+				</div>
 
-				
+
 				{% endif %}
 			</div>
 
@@ -155,7 +165,9 @@
 			<div class="col-md">
 				<div class="card card-body mb-2">
 					<div>
-						<a class="mb-3 d-inline-block text-decoration-none" href="{% url 'friends' profile.id %}"><h1>Friends {% if friends.count > 0 and friend_visibility %} ({{ friends.count }}) {% endif %}</h1></a> 
+						<a class="mb-3 d-inline-block text-decoration-none" href="{% url 'friends' profile.id %}">
+							<h1>Friends {% if friends.count > 0 and friend_visibility %} ({{ friends.count }}) {% endif %}</h1>
+						</a>
 						<ul class="list-unstyled">
 							{% if friends %}
 							{% for friend in friends %}
@@ -172,11 +184,11 @@
 							<hr class="style-one">
 							{% endfor %}
 							{% else %}
-								<p><em>No friends showing</em></p>
+							<p><em>No friends showing</em></p>
 							{% endif %}
 						</ul>
 						{% if request.user.profile == profile %}
-							<a href="{% url 'friend_requests' profile.id %}" class="btn btn-primary w-100">Friend Requests</a>
+						<a href="{% url 'friend_requests' profile.id %}" class="btn btn-primary w-100">Friend Requests</a>
 						{% endif %}
 					</div>
 				</div>
@@ -186,13 +198,13 @@
 						<h1>Events Attending</h1>
 						<ul class="list-unstyled">
 							{% for event in attended_events %}
-								{% if not event.cancelled %}
-								<li><a href="{% url 'event' event.id %}" class="text-decoration-none"><img class="avatar"
-											src="{{ event.host.profile_pic.url }}" alt="Avatar">{{ event.event_title }}</a></li>
-								<hr class="style-one">
-								{% else %}
-									<li><em>No events hosting</em></li>
-								{% endif %}
+							{% if not event.cancelled %}
+							<li><a href="{% url 'event' event.id %}" class="text-decoration-none"><img class="avatar"
+										src="{{ event.host.profile_pic.url }}" alt="Avatar">{{ event.event_title }}</a></li>
+							<hr class="style-one">
+							{% else %}
+							<li><em>No events hosting</em></li>
+							{% endif %}
 							{% empty %}
 							<li><em>No events attending</em></li>
 							{% endfor %}
@@ -201,23 +213,23 @@
 						<h1 class="mt-5">Events Hosting </h1>
 						<ul class="list-unstyled">
 							{% for event in hosted_events %}
-								{% if not event.cancelled %}
-								<li>
-									<a href="{% url 'event' event.id %}" class="text-decoration-none">
-										<img class="avatar" src="{{ event.host.profile_pic.url }}" alt="Avatar">
-										{{ event.event_title }}
-									</a>
-								</li>
-								<hr class="style-one">
-								{% else %}
-									<li><em>No events hosting</em></li>
-								{% endif %}
+							{% if not event.cancelled %}
+							<li>
+								<a href="{% url 'event' event.id %}" class="text-decoration-none">
+									<img class="avatar" src="{{ event.host.profile_pic.url }}" alt="Avatar">
+									{{ event.event_title }}
+								</a>
+							</li>
+							<hr class="style-one">
+							{% else %}
+							<li><em>No events hosting</em></li>
+							{% endif %}
 							{% empty %}
 							<li><em>No events hosting</em></li>
 							{% endfor %}
 						</ul>
 						{% if request.user.profile == profile %}
-							<a href="{% url 'event_requests' profile.id %}" class="btn btn-primary w-100">Event Requests</a>
+						<a href="{% url 'event_requests' profile.id %}" class="btn btn-primary w-100">Event Requests</a>
 						{% endif %}
 					</div>
 				</div>
@@ -235,8 +247,8 @@
 			<div class="col-md mb-2">
 				<div class="card card-body">
 					<div>
-						<h1><a href="{% url 'gallery' profile.id %}"
-								class="text-decoration-none">{{ profile.user.first_name }}'s Photo Gallery</a></h1>
+						<h1><a href="{% url 'gallery' profile.id %}" class="text-decoration-none">{{ profile.user.first_name }}'s
+								Photo Gallery</a></h1>
 						{% if user_photos %}
 						{% for photo in user_photos %}
 						<a href="{% url 'gallery' profile.id %}"><img src="{{photo.image.url}}" alt=""
@@ -252,7 +264,7 @@
 			</div>
 
 
-			
+
 		</div>
 	</div>
 
@@ -280,24 +292,24 @@
 	<!-- end -->
 
 	<!-- DM not friend modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Only Friends Can Message</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Please send a friend request to {{ profile.user.first_name }}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="exampleModalLabel">Only Friends Can Message</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					Please send a friend request to {{ profile.user.first_name }}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-<!-- end -->
+	<!-- end -->
 
 
 </section>
