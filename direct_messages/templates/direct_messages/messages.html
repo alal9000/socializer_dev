@@ -10,7 +10,6 @@
 
   .viewport-height {
     min-height: 70vh;
-    overflow-y: auto;
   }
 
   .avatar {
@@ -28,7 +27,6 @@
   }
 </style>
 
-<!-- Main section -->
 <section>
   <div class="container viewport-height">
     {% if messages %}
@@ -43,7 +41,6 @@
     {% endif %}
     <div class="row">
       <div class="col">
-        <!-- Page header -->
         <section>
           <h1>Messages</h1>
           <h3>Search conversations</h3>
@@ -51,19 +48,29 @@
             placeholder="Name..." />
         </section>
 
-        <!-- Chat area -->
         <section>
           <div id="chat-area-messages">
             <h3 class="mb-3">Conversations:</h3>
-            <ul class="p-0">
-              {% for sender in senders %}
-              <a href="{% url 'conversation' sender.id receiver.id %}" class="text-decoration-none message-link">
-                <p class="username"><img class="avatar" src="{{ sender.profile_pic.url }}" alt="">{{ sender }}</p>
+            <ul class="p-0 list-unstyled">
+              {% for conversation_data in conversations_data %}
+              <li class="conversation-item">
+                <a href="{% url 'conversation' conversation_data.other_participant.id current_profile.id %}"
+                  class="text-decoration-none message-link">
+                  <p class="username">
+                    <img class="avatar" src="{{ conversation_data.other_participant.profile_pic.url }}"
+                      alt="">{{ conversation_data.other_participant }}
+                  </p>
+                </a>
+                <form method="post" action="" class="delete-form">
+                  {% csrf_token %}
+                  <input type="hidden" name="conversation_id" value="{{ conversation_data.conversation.id }}">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
                 <hr class="style-one">
-              </a>
-
+              </li>
               {% endfor %}
-              {% if not senders %}
+
+              {% if conversations_data|length == 0 %}
               <div>
                 <h1>No direct messages yet</h1>
               </div>
@@ -75,6 +82,7 @@
     </div>
   </div>
 </section>
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -90,10 +98,11 @@
         var username = link
           .querySelector('.username')
           .textContent.toLowerCase();
+        var parentLi = link.closest('li');
         if (username.includes(input)) {
-          link.style.display = 'block';
+          parentLi.style.display = 'block'; // Show the entire list item
         } else {
-          link.style.display = 'none';
+          parentLi.style.display = 'none'; // Hide the entire list item
         }
       });
     }

@@ -208,12 +208,18 @@ def profile(request, profile_id):
                         message="You have a new friend request",
                         link=reverse("friend_requests", args=[profile_id]),
                     )
+
+                    messages.success(request, "Friend request sent successfully.")
+                    return redirect(reverse('home'))
             else:
                 button = "Add"
                 Friend.objects.get(
                     sender=request.user.profile,
                     receiver=Profile.objects.get(id=profile_id),
                 ).delete()
+
+                messages.success(request, "unfriend successful")
+                return redirect(reverse('home'))
 
         # description form
         if "update-description" in request.POST:

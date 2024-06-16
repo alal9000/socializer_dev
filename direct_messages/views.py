@@ -1,11 +1,11 @@
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.db.models import Max
 from django.utils import timezone
+from django.urls import reverse
+from django.db.models import Q
 
-from .models import Message
+from .models import Message, Conversation, ConversationStatus
 from app.decorators import check_profile_id
 from app.models import Profile
 from notifications.models import Notification
@@ -16,15 +16,42 @@ from notifications.models import Notification
 def direct_messages(request, profile_id):
     current_profile = get_object_or_404(Profile, id=profile_id)
 
-    # Get distinct sender IDs
-    sender_ids = Message.objects.filter(receiver=current_profile).values('sender').distinct()
-    
-    # Fetch the Profile objects for these sender IDs
-    senders = Profile.objects.filter(id__in=[sender['sender'] for sender in sender_ids])
+    if request.method == "POST":
+        conversation_id = request.POST.get("conversation_id")
+        if conversation_id:
+            conversation = get_object_or_404(Conversation, id=conversation_id)
+            status, created = ConversationStatus.objects.get_or_create(
+                conversation=conversation, profile=current_profile
+            )
+            status.deleted = True
+            status.save()
+
+            messages.success(request, "Conversation deleted successfully.")
+            return redirect(reverse("messages", args=[profile_id]))
+
+    all_conversations = Conversation.objects.filter(participants=current_profile)
+
+    # Filter out conversations that have a status with deleted=True for the current profile
+    deleted_conversations = ConversationStatus.objects.filter(
+        profile=current_profile, deleted=True
+    ).values_list('conversation', flat=True)
+
+    conversations = all_conversations.exclude(id__in=deleted_conversations).distinct()
+
+    print(conversations)
+
+    # Prepare conversations data with the other participant
+    conversations_data = [
+        {
+            "conversation": conversation,
+            "other_participant": conversation.get_other_participant(current_profile),
+        }
+        for conversation in conversations
+    ]
 
     context = {
-        "senders": senders,
-        "receiver": current_profile,
+        "conversations_data": conversations_data,
+        "current_profile": current_profile,
     }
 
     return render(request, "direct_messages/messages.html", context)
@@ -45,6 +72,26 @@ def send_message(request, profile_id):
             message=message_text,
             timestamp=timezone.now(),
         )
+
+        # Check if a conversation already exists between these participants
+        conversation = (
+            Conversation.objects.filter(participants=sender_profile)
+            .filter(participants=receiver_profile)
+            .first()
+        )
+
+        # If no conversation exists, create a new one
+        if not conversation:
+            conversation = Conversation.objects.create()
+            conversation.participants.add(sender_profile, receiver_profile)
+
+        # Update or create the ConversationStatus for the receiver to mark as not deleted
+        receiver_status, created = ConversationStatus.objects.get_or_create(
+            conversation=conversation,
+            profile=receiver_profile,
+        )
+        receiver_status.deleted = False
+        receiver_status.save()
 
         Notification.objects.create(
             user=receiver_profile,
@@ -74,9 +121,9 @@ def conversation_view(request, sender_id, receiver_id):
         )
         conversation_messages = (
             # combine qsets with django union operator and order by latest message
-            messages_sent_by_sender | messages_sent_by_receiver
+            messages_sent_by_sender
+            | messages_sent_by_receiver
         ).order_by("timestamp")
-
 
         if request.method == "POST":
             message_text = request.POST.get("message")
@@ -88,6 +135,26 @@ def conversation_view(request, sender_id, receiver_id):
                     message=message_text,
                     timestamp=timezone.now(),
                 )
+
+                # Check if a conversation already exists between these participants
+                conversation = (
+                    Conversation.objects.filter(participants=sender_profile)
+                    .filter(participants=receiver_profile)
+                    .first()
+                )
+
+                # If no conversation exists, create a new one
+                if not conversation:
+                    conversation = Conversation.objects.create()
+                    conversation.participants.add(sender_profile, receiver_profile)
+
+                # Update or create the ConversationStatus for the receiver to mark as not deleted
+                receiver_status, created = ConversationStatus.objects.get_or_create(
+                    conversation=conversation,
+                    profile=sender_profile,
+                )
+                receiver_status.deleted = False
+                receiver_status.save()
 
                 Notification.objects.create(
                     user=sender_profile,

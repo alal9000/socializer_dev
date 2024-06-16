@@ -37,9 +37,9 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 ==========================================================
 today: (commit after each)
 
-1. styles for button on approve / deny on manage requests page
+1. styles for button on approve / deny on manage requests page x
 
-2. testing google login for name consistency - changes in user settings
+2. testing google login for name consistency - changes in user settings x
 
 3. ability to remove conversation from messages page (may need to redesign db w conversations class - method retuns sender / receiver messages)
 

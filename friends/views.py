@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib import messages
 from django.db.models import Q
 
@@ -6,6 +7,7 @@ from app.decorators import check_profile_id
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Friend
+from notifications.models import Notification 
 from app.models import Profile
 
 
@@ -57,6 +59,12 @@ def friend_requests(request, profile_id):
             if action == "approve":
                 friend_request.status = "accepted"
                 friend_request.save()
+
+                Notification.objects.create(
+                        user=friend_request.sender,
+                        message=f"Your friend request to {friend_request.receiver} was accepted",
+                        link=reverse("profile", args=[request.user.profile.id]),
+                    )
                 messages.success(request, "Friend request approved.")
             elif action == "deny":
                 friend_request.status = "denied"
