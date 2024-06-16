@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 from django import forms
 from allauth.account.forms import SignupForm, LoginForm
 
-from friends.models import Friend
 from . models import Profile, User
 from events.models import Event
+
 
 #create event
 class EventForm(ModelForm):
@@ -47,9 +47,10 @@ class UserUpdateForm(ModelForm):
 class ProfileDescriptionForm(ModelForm):
     class Meta:
         model = Profile
-        fields = ['description']
+        fields = ['description', 'age_band']
         labels = {
-            'description': 'About me'
+            'description': 'About me',
+            'age_band': 'Age Band'
         }
         widgets = {
             'description': forms.Textarea(attrs={
@@ -58,6 +59,7 @@ class ProfileDescriptionForm(ModelForm):
                 'cols': 40,
                 'class': 'form-control placeholder-italic',
             }),
+            'age_band': forms.RadioSelect()
         }
 
 

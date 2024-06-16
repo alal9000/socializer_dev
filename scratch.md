@@ -15,10 +15,8 @@ todo:
 -new signup auth email (last)
 -change email functionality (need to send email validation)
 -edit / save toggle functionality to update the forms on the front end
--add pagination to friends page
--make sure messages can be removed in message template
--outgoing messages should show in the senders messages page
 -your friend has invited you to socializer email
+-create the page requestor to url param decorator
 ==end==
 
 ==testing==
@@ -31,7 +29,6 @@ todo:
 
 
 
-event_id
 git rm --cached */__pycache__/* - remove pycache from tracked files
 
 ==========================================================
@@ -41,11 +38,13 @@ today: (commit after each)
 
 2. testing google login for name consistency - changes in user settings x
 
-3. ability to remove conversation from messages page (may need to redesign db w conversations class - method retuns sender / receiver messages)
+3. ability to remove conversation from messages page (may need to redesign db w conversations class - method retuns sender / receiver messages) x
 
-4. age radios on profile page
+4. age radios on profile page x
 
-5. create the page requestor to url param decorator
+5. profile description data should show for a user whose profile is being browsed (cannot submit the form obviously)
+
+6. look at the pagination on the photos page
 
 
 
