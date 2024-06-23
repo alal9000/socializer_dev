@@ -12,18 +12,30 @@ S3 bucket name: foodiefriend-bucket
 todo:
 
 ==last==
--new signup auth email (last)
+-fb sign up - lucid
 -change email functionality (need to send email validation)
 -edit / save toggle functionality to update the forms on the front end
 -your friend has invited you to socializer email
 -create the page requestor to url param decorator
+-new signup auth email (last)
 ==end==
 
 ==testing==
 -make sure when users check each others profile, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another profile)
+
 -make sure when users check each others messages, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another message profile)
+
 -make sure when users check each others photos, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another users photos)
+
+-make sure when users check each others friends, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another users photos)
+
+-make sure when users check each others events, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another users photos)
+
+-make sure when users check each others notifications, they should see only what they should see and can't do what they shouldn't (make sure they can't access stuff in the address bar of another users photos)
+
 -check if user needs to be logged in to access that resource first and then if it actually exisits - do this to make sure all 404s are handled
+
+-test each app in iso
 -==end==
 
 
@@ -34,17 +46,9 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 ==========================================================
 today: (commit after each)
 
-1. styles for button on approve / deny on manage requests page x
-
-2. testing google login for name consistency - changes in user settings x
-
-3. ability to remove conversation from messages page (may need to redesign db w conversations class - method retuns sender / receiver messages) x
-
-4. age radios on profile page x
-
-5. profile description data should show for a user whose profile is being browsed (cannot submit the form obviously) x
-
-6. look at the pagination on the photos page
+1. unfriend via friends page
+2. email form
+3. change bell icon
 
 
 

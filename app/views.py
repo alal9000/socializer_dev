@@ -193,7 +193,7 @@ def profile(request, profile_id):
                 messages.success(request, "Profile picture updated successfully.")
                 return redirect("profile", profile_id=profile_id)
 
-        # friend / unfriend form
+        # friend form
         if "friend-button" in request.POST:
             if request.POST["friend-button"] == "Add":
                 button = "Pending"
@@ -210,16 +210,8 @@ def profile(request, profile_id):
                     )
 
                     messages.success(request, "Friend request sent successfully.")
-                    return redirect(reverse('home'))
-            else:
-                button = "Add"
-                Friend.objects.get(
-                    sender=request.user.profile,
-                    receiver=Profile.objects.get(id=profile_id),
-                ).delete()
-
-                messages.success(request, "unfriend successful")
-                return redirect(reverse('home'))
+                    return redirect(reverse("home"))
+        # end friend form
 
         # description form
         if "update-description" in request.POST:
@@ -228,6 +220,7 @@ def profile(request, profile_id):
                 description_form.save()
                 messages.success(request, "About me updated successfully.")
                 return redirect("profile", profile_id=profile_id)
+        # end description form
 
     storage = get_messages(request)
     success_message = None

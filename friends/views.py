@@ -38,6 +38,18 @@ def friends(request, profile_id):
         other_friends = friends_paginator.page(friends_paginator.num_pages)
     # end pagination
 
+    # unfriend
+    if request.method == "POST":
+        friend_id = request.POST.get("friend_id")
+        friend_profile = get_object_or_404(Profile, id=friend_id)
+        Friend.objects.filter(
+            Q(sender=profile, receiver=friend_profile) |
+            Q(sender=friend_profile, receiver=profile)
+        ).delete()
+        messages.success(request, "Friend removed successfully")
+        return redirect('friends', profile_id=profile_id)
+    # end unfriend
+
     return render(
         request, "friends/friends.html", {"friends": other_friends, "profile": profile}
     )

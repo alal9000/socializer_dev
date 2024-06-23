@@ -26,6 +26,16 @@
 <!-- main section -->
 <section>
   <div class="container">
+    {% if messages %}
+		<div>
+			{% for message in messages %}
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
+				{{ message }}
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+			{% endfor %}
+		</div>
+		{% endif %}
     <div class="row">
       <div class="col viewport-height">
         <!-- Page header -->
@@ -43,6 +53,13 @@
           <li class="mb-3"><a class="text-decoration-none friend-link" href="{% url 'profile' friend.id %}"><img
                 class="avatar" src="{{ friend.profile_pic.url }}" alt="">
               <p class="username">{{ friend.user.first_name }}</p>
+              <!-- unfriend form -->
+              <form method="post" action="">
+                {% csrf_token %}
+                <input type="hidden" name="friend_id" value="{{ friend.id }}">
+                <button type="submit" class="btn btn-danger">Unfriend</button>
+              </form>
+              <!-- end unfriend form -->
               <hr class="style-one">
             </a>
           </li>
