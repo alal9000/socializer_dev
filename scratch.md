@@ -46,9 +46,12 @@ git rm --cached */__pycache__/* - remove pycache from tracked files
 ==========================================================
 today: (commit after each)
 
-1. unfriend via friends page
+1. unfriend via friends page x
 2. email form
 3. change bell icon
+4. get domain
+5. get emails (no-reply and info) and adjust friend invite on profile
+6. lots of errors are happening if a user without a profile is trying to view a profile page ie: line 106 on profile view. - do checks to handle gracefully
 
 
 

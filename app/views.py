@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.core.mail import send_mail
 from django.utils.text import capfirst
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
@@ -23,6 +25,7 @@ from .forms import (
     ProfileDescriptionForm,
     CustomSignupForm,
     CustomLoginForm,
+    InviteFriendForm
 )
 from events.models import Event
 
@@ -181,6 +184,7 @@ def profile(request, profile_id):
     profile_form = ProfileForm(instance=profile)
     user_form = UserUpdateForm(instance=user_instance)
     description_form = ProfileDescriptionForm(instance=profile)
+    invite_friend_form = InviteFriendForm()
 
     # handle form submissions
     if request.method == "POST":
@@ -222,6 +226,30 @@ def profile(request, profile_id):
                 return redirect("profile", profile_id=profile_id)
         # end description form
 
+
+        # Invite friend form
+        if "invite-friend" in request.POST:
+            invite_friend_form = InviteFriendForm(request.POST)
+            if invite_friend_form.is_valid():
+                email = invite_friend_form.cleaned_data["email"]
+                # Send an email invitation
+                message = (
+                f"Hi, <a href='https://socializer.com.au/accounts/profile/{request.user.profile.id}'>{request.user.first_name} {request.user.last_name}</a> "
+                "has invited you to join Socializer. Sign up at: <a href='http://example.com/signup'>http://example.com/signup</a>"
+                )
+                send_mail(
+                    'Invitation to Socializer',
+                    '',
+                    settings.EMAIL_HOST_USER,
+                    [email],
+                    html_message=message,
+                    fail_silently=False,
+                )
+                messages.success(request, "Invitation sent successfully.")
+                return redirect("profile", profile_id=profile_id)
+        # end invite friend form
+    # end handle form submissions
+
     storage = get_messages(request)
     success_message = None
     for message in storage:
@@ -231,6 +259,7 @@ def profile(request, profile_id):
     context = {
         "is_friend": is_friend,
         "profile_form": profile_form,
+        "invite_friend_form": invite_friend_form,
         "user_form": user_form,
         "user_photos": user_photos,
         "attended_events": attended_events,

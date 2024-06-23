@@ -260,8 +260,20 @@
 					</div>
 				</div>
 
-
+				{% if request.user.profile == profile %}
+				<!-- Invite Friend Form -->
+        <section>
+          <h3>Invite a Friend To Socializer</h3>
+          <form method="post" action="">
+            {% csrf_token %}
+            {{ invite_friend_form.as_p }}
+            <button type="submit" name="invite-friend" class="btn btn-primary">Send Invitation</button>
+          </form>
+        </section>
+        <!-- end invite friend form -->
+				{% endif %}
 			</div>
+			<!-- end column 3 -->
 
 
 
